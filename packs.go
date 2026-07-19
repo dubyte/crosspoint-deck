@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/magefile/mage/mg"
 	"github.com/dubyte/crosspoint-deck/pkg/pack"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/calendar"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/cheatsheet"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/emergency"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/wifi"
+	"github.com/magefile/mage/mg"
 )
 
 // PackCalendar generates the 2026 calendar starter pack.
@@ -81,10 +81,9 @@ func PackTravel() error {
 		AddTag("travel").
 		AddTag("essentials")
 
-	b.AddCard("WiFi Access", &wifi.WiFiCard{
+	b.AddCard("WiFi Access", &wifi.Card{
 		SSID:     "HotelWiFi",
 		Password: "travel2026",
-		Encryption: "WPA",
 	})
 
 	b.AddCard("Emergency USA", &emergency.Card{

@@ -8,7 +8,7 @@ import (
 )
 
 func TestWiFiCard_Render(t *testing.T) {
-	c := &WiFiCard{
+	c := &Card{
 		SSID:     "TestNet",
 		Password: "secret",
 	}
@@ -16,7 +16,7 @@ func TestWiFiCard_Render(t *testing.T) {
 }
 
 func TestWiFiCard_Portrait(t *testing.T) {
-	c := &WiFiCard{
+	c := &Card{
 		SSID:     "TestNet",
 		Password: "secret",
 		Portrait: true,

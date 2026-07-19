@@ -46,14 +46,14 @@ func (c *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "Conversions", W, 22, c.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "Conversions", W, 26, c.FontPath)
 
 	half := len(conversions) / 2
 	colW := float64(W) / 2
 	startY := bodyY + 12
-	lineH := 28.0
+	lineH := 32.0
 
-	_ = layout.LoadFontFace(dc, c.FontPath, 14)
+	_ = layout.LoadFontFace(dc, c.FontPath, 18)
 	for i, conv := range conversions {
 		x := 30.0
 		col := i

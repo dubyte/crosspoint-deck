@@ -11,7 +11,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// Card renders a packing checklist.
 type Card struct {
 	Title    string
 	Items    []string
@@ -19,7 +18,6 @@ type Card struct {
 	FontPath string
 }
 
-// Render produces a packing checklist card.
 func (p *Card) Render() image.Image {
 	var W, H int
 	if p.Portrait {
@@ -32,18 +30,23 @@ func (p *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, p.Title, W, 22, p.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, p.Title, W, 26, p.FontPath)
 
-	// Items list
-	_ = layout.LoadFontFace(dc, p.FontPath, 16)
+	_ = layout.LoadFontFace(dc, p.FontPath, 20)
 	colW := float64(W) / 2
-	startY := bodyY + 8
+	startY := bodyY + 12
+	lineH := 38.0
+	perCol := 10
+	if p.Portrait {
+		perCol = 18
+	}
+
 	for i, item := range p.Items {
-		y := startY + float64((i%12)*30)
-		x := 30.0
-		if i >= 12 && !p.Portrait {
-			x = colW + 30
-			y = startY + float64((i-12)*30)
+		y := startY + float64((i%perCol))*lineH
+		x := 40.0
+		if i >= perCol && !p.Portrait {
+			x = colW + 40
+			y = startY + float64((i-perCol))*lineH
 		}
 		if y > float64(H)-20 {
 			break
@@ -55,7 +58,6 @@ func (p *Card) Render() image.Image {
 	return dc.Image()
 }
 
-// Spec returns the card.Spec for packing.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "packing",

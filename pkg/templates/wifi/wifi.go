@@ -2,6 +2,7 @@ package wifi
 
 import (
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 
@@ -11,17 +12,14 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// WiFiCard renders a WiFi access card with QR code.
-type WiFiCard struct {
-	SSID       string
-	Password   string
-	Encryption string
-	Portrait   bool
-	FontPath   string
+type Card struct {
+	SSID     string
+	Password string
+	Portrait bool
+	FontPath string
 }
 
-// Render produces a WiFi card with network info and QR code.
-func (w *WiFiCard) Render() image.Image {
+func (w *Card) Render() image.Image {
 	var W, H int
 	if w.Portrait {
 		W, H = 480, 800
@@ -33,50 +31,52 @@ func (w *WiFiCard) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "WiFi Access", W, 22, w.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "WiFi", W, 26, w.FontPath)
 
-	// Network info with bold labels
-	infoY := bodyY + 16
+	infoY := bodyY + 30
+	lineH := 42.0
 
-	_ = layout.LoadFontFaceBold(dc, w.FontPath, 16)
+	_ = layout.LoadFontFaceBold(dc, w.FontPath, 20)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored("Network", float64(W)/2, infoY, 0.5, 0.5)
+	nw, _ := dc.MeasureString("SSID")
+	dc.DrawString("SSID", float64(W)/2-nw-10, infoY)
 
-	_ = layout.LoadFontFace(dc, w.FontPath, 22)
-	dc.DrawStringAnchored(w.SSID, float64(W)/2, infoY+28, 0.5, 0.5)
+	_ = layout.LoadFontFace(dc, w.FontPath, 26)
+	dc.DrawString(w.SSID, float64(W)/2+10, infoY)
+	infoY += lineH
 
-	infoY += 72
-	_ = layout.LoadFontFaceBold(dc, w.FontPath, 16)
-	dc.DrawStringAnchored("Password", float64(W)/2, infoY, 0.5, 0.5)
+	_ = layout.LoadFontFaceBold(dc, w.FontPath, 20)
+	dc.SetColor(color.Black)
+	pw, _ := dc.MeasureString("PWD")
+	dc.DrawString("PWD", float64(W)/2-pw-10, infoY)
 
-	_ = layout.LoadFontFace(dc, w.FontPath, 22)
-	dc.DrawStringAnchored(w.Password, float64(W)/2, infoY+28, 0.5, 0.5)
+	_ = layout.LoadFontFace(dc, w.FontPath, 26)
+	dc.DrawString(w.Password, float64(W)/2+10, infoY)
 
-	// QR code
+	// QR
+	qrText := fmt.Sprintf("WIFI:T:WPA;S:%s;P:%s;;", w.SSID, w.Password)
 	qrSize := 240
 	if w.Portrait {
 		qrSize = 280
 	}
-	qrImg, err := qr.GenerateWiFi(w.SSID, w.Password, w.Encryption, qrSize)
+	qrImg, err := qr.Generate(qrText, qrSize)
 	if err == nil {
 		x := (W - qrSize) / 2
-		y := H - qrSize - 20
+		y := H - qrSize - 30
 		dc.DrawImage(qrImg, x, y)
 	}
 
 	return dc.Image()
 }
 
-// Spec returns the card.Spec for wifi.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "wifi",
 		Usage: "Generate a WiFi access card with QR code",
 		New: func(fs *flag.FlagSet) card.Card {
-			c := &WiFiCard{}
-			fs.StringVar(&c.SSID, "ssid", "MyNetwork", "WiFi network name")
+			c := &Card{}
+			fs.StringVar(&c.SSID, "ssid", "", "WiFi network name")
 			fs.StringVar(&c.Password, "password", "", "WiFi password")
-			fs.StringVar(&c.Encryption, "encryption", "WPA", "Encryption type (WPA, WEP, nopass)")
 			fs.BoolVar(&c.Portrait, "portrait", false, "Render in portrait orientation")
 			fs.StringVar(&c.FontPath, "font", "", "Path to TTF font (optional)")
 			return c

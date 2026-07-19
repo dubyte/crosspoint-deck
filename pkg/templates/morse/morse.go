@@ -40,28 +40,33 @@ func (c *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "Morse Code", W, 22, c.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "Morse Code", W, 26, c.FontPath)
 
-	half := len(codes) / 2
-	colW := float64(W) / 2
+	// 3 columns in landscape, 2 in portrait
+	cols := 3
+	if c.Portrait {
+		cols = 2
+	}
+	perCol := (len(codes) + cols - 1) / cols
+	colW := float64(W) / float64(cols)
 	startY := bodyY + 12
 	lineH := 28.0
 
 	for i, entry := range codes {
-		x := 30.0
-		col := i
-		y := startY + float64(col)*lineH
-		if i >= half {
-			x = colW + 30
-			y = startY + float64(col-half)*lineH
+		col := i / perCol
+		row := i % perCol
+		x := float64(col)*colW + 30
+		y := startY + float64(row)*lineH
+		if y > float64(H)-20 {
+			break
 		}
 
-		_ = layout.LoadFontFaceBold(dc, c.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, c.FontPath, 18)
 		dc.SetColor(color.Black)
 		lw, _ := dc.MeasureString(entry.letter)
 		dc.DrawString(entry.letter, x, y)
 
-		_ = layout.LoadFontFace(dc, c.FontPath, 16)
+		_ = layout.LoadFontFace(dc, c.FontPath, 18)
 		dc.DrawString("  "+entry.code, x+lw, y)
 	}
 

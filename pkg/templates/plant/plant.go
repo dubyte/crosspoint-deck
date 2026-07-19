@@ -33,10 +33,10 @@ func (p *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, p.Plant, W, 22, p.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, p.Plant, W, 26, p.FontPath)
 
-	infoY := bodyY + 16
-	lineH := 32.0
+	infoY := bodyY + 20
+	lineH := 42.0
 	for _, entry := range []struct{ label, value string }{
 		{"Water", p.Water},
 		{"Light", p.Light},
@@ -46,21 +46,21 @@ func (p *Card) Render() image.Image {
 		if entry.value == "" {
 			continue
 		}
-		_ = layout.LoadFontFaceBold(dc, p.FontPath, 18)
+		_ = layout.LoadFontFaceBold(dc, p.FontPath, 22)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(entry.label)
-		dc.DrawString(entry.label, float64(W)/2-w-6, infoY)
+		dc.DrawString(entry.label, float64(W)/2-w-8, infoY)
 
-		_ = layout.LoadFontFace(dc, p.FontPath, 18)
-		dc.DrawString(entry.value, float64(W)/2+6, infoY)
+		_ = layout.LoadFontFace(dc, p.FontPath, 22)
+		dc.DrawString(entry.value, float64(W)/2+8, infoY)
 		infoY += lineH
 	}
 
 	if p.Notes != "" {
-		infoY += 10
-		_ = layout.LoadFontFace(dc, p.FontPath, 14)
+		infoY += 12
+		_ = layout.LoadFontFace(dc, p.FontPath, 18)
 		dc.SetColor(color.Black)
-		layout.DrawWrappedText(dc, p.Notes, 30, infoY, float64(W)-60, 20)
+		layout.DrawWrappedText(dc, p.Notes, 30, infoY, float64(W)-60, 24)
 	}
 
 	return dc.Image()

@@ -35,33 +35,31 @@ func (t *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "World Time", W, 22, t.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "World Time", W, 26, t.FontPath)
 
-	// Local timezone
-	infoY := bodyY + 14
+	infoY := bodyY + 16
 	if t.Local != "" {
-		_ = layout.LoadFontFace(dc, t.FontPath, 14)
+		_ = layout.LoadFontFace(dc, t.FontPath, 18)
 		dc.SetColor(color.Black)
 		dc.DrawStringAnchored("Local: "+t.Local, float64(W)/2, infoY, 0.5, 0.5)
-		infoY += 32
+		infoY += 38
 	}
 
-	// Cities
-	startY := infoY + 8
-	lineH := 30.0
+	startY := infoY + 10
+	lineH := 38.0
 	for i, c := range t.Cities {
 		y := float64(startY) + float64(i)*lineH
 		if y > float64(H)-30 {
 			break
 		}
 
-		_ = layout.LoadFontFaceBold(dc, t.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, t.FontPath, 20)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(c.Name)
-		dc.DrawString(c.Name, float64(W)/2-w-8, y)
+		dc.DrawString(c.Name, float64(W)/2-w-10, y)
 
-		_ = layout.LoadFontFace(dc, t.FontPath, 16)
-		dc.DrawString(c.Offset, float64(W)/2+8, y)
+		_ = layout.LoadFontFace(dc, t.FontPath, 20)
+		dc.DrawString(c.Offset, float64(W)/2+10, y)
 	}
 
 	return dc.Image()

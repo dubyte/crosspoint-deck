@@ -11,7 +11,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// Card renders an emergency information card.
 type Card struct {
 	Country   string
 	Contacts  []EmergencyContact
@@ -21,13 +20,11 @@ type Card struct {
 	FontPath  string
 }
 
-// EmergencyContact holds a label and number.
 type EmergencyContact struct {
 	Label  string
 	Number string
 }
 
-// Render produces an emergency info card.
 func (e *Card) Render() image.Image {
 	var W, H int
 	if e.Portrait {
@@ -44,54 +41,50 @@ func (e *Card) Render() image.Image {
 	if e.Country != "" {
 		title = "Emergency · " + e.Country
 	}
-	bodyY := layout.DrawReversedHeader(dc, title, W, 22, e.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, title, W, 26, e.FontPath)
 
-	// Contacts with bold labels
-	startY := bodyY + 16
-	lineH := 32.0
-	_ = layout.LoadFontFaceBold(dc, e.FontPath, 18)
+	startY := bodyY + 20
+	lineH := 42.0
 
 	for i, contact := range e.Contacts {
 		y := float64(startY) + float64(i)*lineH
-		if y > float64(H)-80 {
+		if y > float64(H)-90 {
 			break
 		}
-		_ = layout.LoadFontFaceBold(dc, e.FontPath, 18)
+		_ = layout.LoadFontFaceBold(dc, e.FontPath, 22)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(contact.Label)
-		dc.DrawString(contact.Label, float64(W)/2-w-8, y)
+		dc.DrawString(contact.Label, float64(W)/2-w-10, y)
 
-		_ = layout.LoadFontFace(dc, e.FontPath, 18)
-		dc.DrawString(contact.Number, float64(W)/2+8, y)
+		_ = layout.LoadFontFace(dc, e.FontPath, 22)
+		dc.DrawString(contact.Number, float64(W)/2+10, y)
 	}
 
-	// Medical info
 	if e.BloodType != "" || e.Allergies != "" {
-		medY := float64(H) - 60
-		_ = layout.LoadFontFace(dc, e.FontPath, 16)
+		medY := float64(H) - 70
+		_ = layout.LoadFontFace(dc, e.FontPath, 20)
 		dc.SetColor(color.Black)
 		if e.BloodType != "" {
-			_ = layout.LoadFontFaceBold(dc, e.FontPath, 16)
+			_ = layout.LoadFontFaceBold(dc, e.FontPath, 20)
 			w, _ := dc.MeasureString("Blood")
-			dc.DrawString("Blood", float64(W)/2-w-4, medY)
+			dc.DrawString("Blood", float64(W)/2-w-6, medY)
 
-			_ = layout.LoadFontFace(dc, e.FontPath, 16)
-			dc.DrawString(e.BloodType, float64(W)/2+4, medY)
+			_ = layout.LoadFontFace(dc, e.FontPath, 20)
+			dc.DrawString(e.BloodType, float64(W)/2+6, medY)
 		}
 		if e.Allergies != "" {
-			_ = layout.LoadFontFaceBold(dc, e.FontPath, 16)
+			_ = layout.LoadFontFaceBold(dc, e.FontPath, 20)
 			w, _ := dc.MeasureString("Allergies")
-			dc.DrawString("Allergies", float64(W)/2-w-4, medY+25)
+			dc.DrawString("Allergies", float64(W)/2-w-6, medY+30)
 
-			_ = layout.LoadFontFace(dc, e.FontPath, 16)
-			dc.DrawString(e.Allergies, float64(W)/2+4, medY+25)
+			_ = layout.LoadFontFace(dc, e.FontPath, 20)
+			dc.DrawString(e.Allergies, float64(W)/2+6, medY+30)
 		}
 	}
 
 	return dc.Image()
 }
 
-// Spec returns the card.Spec for emergency.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "emergency",

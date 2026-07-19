@@ -12,7 +12,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// Card renders a business card with contact info and QR vCard.
 type Card struct {
 	Name     string
 	Title    string
@@ -23,7 +22,6 @@ type Card struct {
 	FontPath string
 }
 
-// Render produces a business card with QR vCard.
 func (b *Card) Render() image.Image {
 	var W, H int
 	if b.Portrait {
@@ -36,18 +34,16 @@ func (b *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, b.Name, W, 22, b.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, b.Name, W, 26, b.FontPath)
 
-	// Title below name
-	_ = layout.LoadFontFace(dc, b.FontPath, 16)
+	// Title
+	_ = layout.LoadFontFace(dc, b.FontPath, 20)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(b.Title, float64(W)/2, bodyY+10, 0.5, 0.5)
+	dc.DrawStringAnchored(b.Title, float64(W)/2, bodyY+14, 0.5, 0.5)
 
-	// Contact info with bold labels
-	infoY := bodyY + 46
-	lineH := 28.0
-	_ = layout.LoadFontFaceBold(dc, b.FontPath, 14)
-	_ = layout.LoadFontFace(dc, b.FontPath, 14)
+	// Contact info
+	infoY := bodyY + 52
+	lineH := 34.0
 	for _, entry := range []struct{ label, value string }{
 		{"Phone", b.Phone},
 		{"Email", b.Email},
@@ -56,21 +52,21 @@ func (b *Card) Render() image.Image {
 		if entry.value == "" {
 			continue
 		}
-		_ = layout.LoadFontFaceBold(dc, b.FontPath, 14)
+		_ = layout.LoadFontFaceBold(dc, b.FontPath, 18)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(entry.label)
-		dc.DrawString(entry.label, float64(W)/2-w-6, infoY)
-		_ = layout.LoadFontFace(dc, b.FontPath, 14)
-		dc.DrawString(entry.value, float64(W)/2+6, infoY)
+		dc.DrawString(entry.label, float64(W)/2-w-8, infoY)
+		_ = layout.LoadFontFace(dc, b.FontPath, 18)
+		dc.DrawString(entry.value, float64(W)/2+8, infoY)
 		infoY += lineH
 	}
 
-	// QR vCard
+	// QR
 	vCard := fmt.Sprintf("BEGIN:VCARD\nVERSION:3.0\nFN:%s\nTITLE:%s\nTEL:%s\nEMAIL:%s\nURL:%s\nEND:VCARD",
 		b.Name, b.Title, b.Phone, b.Email, b.Website)
 	qrSize := 200
 	if b.Portrait {
-		qrSize = 240
+		qrSize = 260
 	}
 	qrImg, err := qr.Generate(vCard, qrSize)
 	if err == nil {
@@ -82,7 +78,6 @@ func (b *Card) Render() image.Image {
 	return dc.Image()
 }
 
-// Spec returns the card.Spec for business.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "business",

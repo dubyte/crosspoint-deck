@@ -37,28 +37,28 @@ func (c *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "NATO Phonetic", W, 22, c.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "NATO Phonetic", W, 26, c.FontPath)
 
 	half := 13
 	colW := float64(W) / 2
 	startY := bodyY + 12
-	lineH := 28.0
+	lineH := 32.0
 
 	for i, entry := range alphabet {
-		x := 30.0
+		x := 40.0
 		col := i
 		y := startY + float64(col)*lineH
 		if i >= half {
-			x = colW + 30
+			x = colW + 40
 			y = startY + float64(col-half)*lineH
 		}
 
-		_ = layout.LoadFontFaceBold(dc, c.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, c.FontPath, 20)
 		dc.SetColor(color.Black)
 		lw, _ := dc.MeasureString(entry.letter)
 		dc.DrawString(entry.letter, x, y)
 
-		_ = layout.LoadFontFace(dc, c.FontPath, 16)
+		_ = layout.LoadFontFace(dc, c.FontPath, 20)
 		dc.DrawString("  "+entry.word, x+lw, y)
 	}
 

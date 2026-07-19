@@ -35,26 +35,26 @@ func (s *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, s.Title, W, 22, s.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, s.Title, W, 26, s.FontPath)
 
-	startY := bodyY + 20
-	lineH := 32.0
+	startY := bodyY + 24
+	lineH := 40.0
 	for i, st := range s.Stretches {
 		y := float64(startY) + float64(i)*lineH
 		if y > float64(H)-30 {
 			break
 		}
 
-		_ = layout.LoadFontFace(dc, s.FontPath, 16)
+		_ = layout.LoadFontFace(dc, s.FontPath, 20)
 		dc.SetColor(color.Black)
 		num := string(rune('1'+i)) + ". "
 		nw, _ := dc.MeasureString(num)
 		dc.DrawString(num, 30, y)
 
-		_ = layout.LoadFontFaceBold(dc, s.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, s.FontPath, 20)
 		dc.DrawString(st.Name, 30+nw, y)
 
-		_ = layout.LoadFontFace(dc, s.FontPath, 16)
+		_ = layout.LoadFontFace(dc, s.FontPath, 20)
 		ew, _ := dc.MeasureString(st.Name)
 		dc.DrawString(" · Hold: "+st.Duration, 30+nw+ew, y)
 	}

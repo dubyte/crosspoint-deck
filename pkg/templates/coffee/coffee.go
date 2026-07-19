@@ -37,10 +37,10 @@ func (c *Card) Render() image.Image {
 	if c.Method != "" {
 		title = c.Method
 	}
-	bodyY := layout.DrawReversedHeader(dc, title, W, 22, c.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, title, W, 26, c.FontPath)
 
 	// Brew params
-	paramY := bodyY + 16
+	paramY := bodyY + 20
 	params := []struct{ label, value string }{
 		{"Ratio", c.Ratio},
 		{"Temp", c.Temp},
@@ -50,30 +50,30 @@ func (c *Card) Render() image.Image {
 		if p.value == "" {
 			continue
 		}
-		_ = layout.LoadFontFaceBold(dc, c.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, c.FontPath, 20)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(p.label)
-		dc.DrawString(p.label, float64(W)/2-w-6, paramY)
+		dc.DrawString(p.label, float64(W)/2-w-8, paramY)
 
-		_ = layout.LoadFontFace(dc, c.FontPath, 16)
-		dc.DrawString(p.value, float64(W)/2+6, paramY)
-		paramY += 28
+		_ = layout.LoadFontFace(dc, c.FontPath, 20)
+		dc.DrawString(p.value, float64(W)/2+8, paramY)
+		paramY += 34
 	}
 
 	// Steps
 	if len(c.Steps) > 0 {
-		paramY += 12
-		_ = layout.LoadFontFaceBold(dc, c.FontPath, 16)
+		paramY += 16
+		_ = layout.LoadFontFaceBold(dc, c.FontPath, 20)
 		dc.DrawString("Steps", 30, paramY)
-		paramY += 26
+		paramY += 30
 
-		_ = layout.LoadFontFace(dc, c.FontPath, 14)
+		_ = layout.LoadFontFace(dc, c.FontPath, 18)
 		for i, step := range c.Steps {
 			if paramY > float64(H)-20 {
 				break
 			}
 			dc.DrawString(string(rune('1'+i))+". "+step, 40, paramY)
-			paramY += 22
+			paramY += 28
 		}
 	}
 

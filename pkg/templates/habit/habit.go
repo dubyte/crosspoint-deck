@@ -12,7 +12,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// Card renders a habit tracker grid.
 type Card struct {
 	Title    string
 	Habits   []string
@@ -21,7 +20,6 @@ type Card struct {
 	FontPath string
 }
 
-// Render produces a habit tracker card.
 func (h *Card) Render() image.Image {
 	var W, H int
 	if h.Portrait {
@@ -34,13 +32,12 @@ func (h *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, h.Title, W, 22, h.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, h.Title, W, 26, h.FontPath)
 
 	if len(h.Habits) == 0 {
 		return dc.Image()
 	}
 
-	// Grid
 	days := h.Days
 	if days <= 0 {
 		days = 7
@@ -51,26 +48,28 @@ func (h *Card) Render() image.Image {
 
 	cols := days
 	rows := len(h.Habits)
-	marginX := 80.0
-	marginY := bodyY + 20
+	marginX := 90.0
+	marginY := bodyY + 24
 	cellW := (float64(W) - marginX - 20) / float64(cols)
 	cellH := (float64(H) - marginY - 20) / float64(rows)
-
-	_ = layout.LoadFontFace(dc, h.FontPath, 12)
+	if cellH > 44 {
+		cellH = 44
+	}
 
 	// Day headers
+	_ = layout.LoadFontFace(dc, h.FontPath, 16)
 	for d := 0; d < days; d++ {
 		x := marginX + float64(d)*cellW + cellW/2
 		dc.SetColor(color.Black)
-		dc.DrawStringAnchored(fmtDay(d+1), x, marginY-10, 0.5, 0.5)
+		dc.DrawStringAnchored(fmtDay(d+1), x, marginY-12, 0.5, 0.5)
 	}
 
 	// Habit rows
-	_ = layout.LoadFontFaceBold(dc, h.FontPath, 12)
+	_ = layout.LoadFontFaceBold(dc, h.FontPath, 16)
 	for r, habit := range h.Habits {
 		y := marginY + float64(r)*cellH + cellH/2
 		dc.SetColor(color.Black)
-		dc.DrawStringAnchored(habit, marginX-10, y, 1.0, 0.5)
+		dc.DrawStringAnchored(habit, marginX-12, y, 1.0, 0.5)
 
 		for d := 0; d < days; d++ {
 			x := marginX + float64(d)*cellW + cellW/2
@@ -96,7 +95,6 @@ func min(a, b float64) float64 {
 	return b
 }
 
-// Spec returns the card.Spec for habit.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "habit",

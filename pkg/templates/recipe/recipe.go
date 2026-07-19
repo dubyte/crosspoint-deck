@@ -33,10 +33,10 @@ func (r *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, r.Title, W, 22, r.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, r.Title, W, 26, r.FontPath)
 
 	// Meta line
-	metaY := bodyY + 14
+	metaY := bodyY + 16
 	meta := ""
 	if r.Time != "" {
 		meta = "⏱ " + r.Time
@@ -48,21 +48,19 @@ func (r *Card) Render() image.Image {
 		meta += "🍽 " + r.Servings
 	}
 	if meta != "" {
-		_ = layout.LoadFontFace(dc, r.FontPath, 14)
+		_ = layout.LoadFontFace(dc, r.FontPath, 18)
 		dc.SetColor(color.Black)
 		dc.DrawStringAnchored(meta, float64(W)/2, metaY, 0.5, 0.5)
-		metaY += 26
+		metaY += 32
 	}
 
 	sectionY := metaY + 8
 
 	if r.Portrait {
-		// Stacked
 		sectionY = r.drawSection(dc, r.FontPath, "Ingredients", r.Ingredients, 30, sectionY, float64(W)-60, false)
-		sectionY += 16
+		sectionY += 20
 		_ = r.drawSection(dc, r.FontPath, "Steps", r.Steps, 30, sectionY, float64(W)-60, true)
 	} else {
-		// Side by side
 		midX := float64(W) / 2
 		r.drawSection(dc, r.FontPath, "Ingredients", r.Ingredients, 20, sectionY, midX-30, false)
 		r.drawSection(dc, r.FontPath, "Steps", r.Steps, midX+10, sectionY, midX-30, true)
@@ -71,13 +69,13 @@ func (r *Card) Render() image.Image {
 	return dc.Image()
 }
 
-func (r *Card) drawSection(dc *gg.Context, fontPath, title string, items []string, x, y, maxW float64, numbered bool) float64 {
-	_ = layout.LoadFontFaceBold(dc, fontPath, 16)
+func (r *Card) drawSection(dc *gg.Context, fontPath, title string, items []string, x, y, _ float64, numbered bool) float64 {
+	_ = layout.LoadFontFaceBold(dc, fontPath, 20)
 	dc.SetColor(color.Black)
 	dc.DrawString(title, x, y)
-	curY := y + 24
+	curY := y + 28
 
-	_ = layout.LoadFontFace(dc, fontPath, 14)
+	_ = layout.LoadFontFace(dc, fontPath, 18)
 	for i, item := range items {
 		if curY > float64(dc.Height())-20 {
 			break
@@ -86,8 +84,8 @@ func (r *Card) drawSection(dc *gg.Context, fontPath, title string, items []strin
 		if numbered {
 			prefix = string(rune('1'+i)) + ". "
 		}
-		dc.DrawString(prefix+item, x+10, curY)
-		curY += 22
+		dc.DrawString(prefix+item, x+12, curY)
+		curY += 26
 	}
 	return curY
 }

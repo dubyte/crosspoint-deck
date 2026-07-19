@@ -42,7 +42,7 @@ func (y *YearCard) Render() image.Image {
 
 	// Reversed header with year
 	_ = layout.LoadFontFaceBold(dc, y.FontPath, 26)
-	headerH := 42.0
+	headerH := 50.0
 	dc.SetColor(color.Black)
 	dc.DrawRectangle(0, 0, float64(W), headerH)
 	dc.Fill()
@@ -52,11 +52,11 @@ func (y *YearCard) Render() image.Image {
 	// 2px divider
 	dc.SetColor(color.Black)
 	dc.SetLineWidth(2)
-	dc.DrawLine(20, headerH+8, float64(W)-20, headerH+8)
+	dc.DrawLine(20, headerH+10, float64(W)-20, headerH+10)
 	dc.Stroke()
 
 	gap := 16.0
-	topY := headerH + 18
+	topY := headerH + 22
 	cellW := (float64(W) - gap*float64(cols-1)) / float64(cols)
 	cellH := (float64(H) - topY - gap*float64(rows-1)) / float64(rows)
 
@@ -77,15 +77,15 @@ func (y *YearCard) Render() image.Image {
 
 func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath string) {
 	// Month name in bold
-	_ = layout.LoadFontFaceBold(dc, fontPath, 15)
+	_ = layout.LoadFontFaceBold(dc, fontPath, 18)
 	dc.SetColor(color.Black)
 	monthName := t.Format("Jan")
-	dc.DrawStringAnchored(monthName, x0+cw/2, y0+13, 0.5, 0.5)
+	dc.DrawStringAnchored(monthName, x0+cw/2, y0+16, 0.5, 0.5)
 
 	// Day headers: S M T W T F S
-	_ = layout.LoadFontFace(dc, fontPath, 12)
+	_ = layout.LoadFontFace(dc, fontPath, 14)
 	days := []string{"S", "M", "T", "W", "T", "F", "S"}
-	headerY := y0 + 28
+	headerY := y0 + 34
 	cellW := cw / 7
 	for i, d := range days {
 		dc.DrawStringAnchored(d, x0+cellW*float64(i)+cellW/2, headerY, 0.5, 0.5)
@@ -96,10 +96,10 @@ func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath str
 	lastDay := firstDay.AddDate(0, 1, -1)
 	startWeekday := int(firstDay.Weekday()) // 0=Sunday
 
-	dayY := headerY + 16
-	dayH := (ch - 44) / 6
+	dayY := headerY + 18
+	dayH := (ch - 52) / 6
 
-	_ = layout.LoadFontFace(dc, fontPath, 14)
+	_ = layout.LoadFontFace(dc, fontPath, 16)
 	day := 1
 	for week := 0; week < 6; week++ {
 		for wd := 0; wd < 7; wd++ {

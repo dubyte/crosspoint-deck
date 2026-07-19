@@ -31,20 +31,20 @@ func (l *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, "Library Card", W, 22, l.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, "Library Card", W, 26, l.FontPath)
 
 	// Name
-	_ = layout.LoadFontFace(dc, l.FontPath, 18)
+	_ = layout.LoadFontFace(dc, l.FontPath, 22)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(l.Name, float64(W)/2, bodyY+20, 0.5, 0.5)
+	dc.DrawStringAnchored(l.Name, float64(W)/2, bodyY+24, 0.5, 0.5)
 
 	// Card number - large
-	_ = layout.LoadFontFaceBold(dc, l.FontPath, 22)
-	dc.DrawStringAnchored(l.CardNumber, float64(W)/2, bodyY+70, 0.5, 0.5)
+	_ = layout.LoadFontFaceBold(dc, l.FontPath, 28)
+	dc.DrawStringAnchored(l.CardNumber, float64(W)/2, bodyY+80, 0.5, 0.5)
 
-	// Details with bold labels
-	infoY := bodyY + 120
-	lineH := 32.0
+	// Details
+	infoY := bodyY + 140
+	lineH := 38.0
 	for _, entry := range []struct{ label, value string }{
 		{"Card #", l.CardNumber},
 		{"Branch", l.Branch},
@@ -53,13 +53,13 @@ func (l *Card) Render() image.Image {
 		if entry.value == "" {
 			continue
 		}
-		_ = layout.LoadFontFaceBold(dc, l.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, l.FontPath, 20)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(entry.label)
-		dc.DrawString(entry.label, float64(W)/2-w-6, infoY)
+		dc.DrawString(entry.label, float64(W)/2-w-8, infoY)
 
-		_ = layout.LoadFontFace(dc, l.FontPath, 16)
-		dc.DrawString(entry.value, float64(W)/2+6, infoY)
+		_ = layout.LoadFontFace(dc, l.FontPath, 20)
+		dc.DrawString(entry.value, float64(W)/2+8, infoY)
 		infoY += lineH
 	}
 

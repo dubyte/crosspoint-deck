@@ -10,7 +10,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-// Card renders a meeting room schedule for today.
 type Card struct {
 	Room     string
 	Events   []string
@@ -18,7 +17,6 @@ type Card struct {
 	FontPath string
 }
 
-// Render produces a meeting room schedule card.
 func (m *Card) Render() image.Image {
 	var W, H int
 	if m.Portrait {
@@ -31,13 +29,12 @@ func (m *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, m.Room, W, 24, m.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, m.Room, W, 26, m.FontPath)
 
-	// Events list
-	_ = layout.LoadFontFace(dc, m.FontPath, 18)
-	startY := bodyY + 16
+	_ = layout.LoadFontFace(dc, m.FontPath, 22)
+	startY := bodyY + 20
 	for i, event := range m.Events {
-		y := startY + float64(i)*35
+		y := startY + float64(i)*42
 		if y > float64(H)-30 {
 			break
 		}
@@ -48,7 +45,6 @@ func (m *Card) Render() image.Image {
 	return dc.Image()
 }
 
-// Spec returns the card.Spec for meeting.
 func Spec() card.Spec {
 	return card.Spec{
 		Name:  "meeting",

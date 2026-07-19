@@ -37,7 +37,7 @@ func LoadFontFaceBold(dc *gg.Context, path string, size float64) error {
 // DrawReversedHeader draws a black bar with white text and a 2px divider below it.
 // Returns the y coordinate where body content should start.
 func DrawReversedHeader(dc *gg.Context, title string, W int, fontSize float64, fontPath string) float64 {
-	headerH := 56.0
+	headerH := 64.0
 
 	// Black bar
 	dc.SetColor(color.Black)
@@ -55,7 +55,7 @@ func DrawReversedHeader(dc *gg.Context, title string, W int, fontSize float64, f
 	dc.DrawLine(20, headerH+10, float64(W)-20, headerH+10)
 	dc.Stroke()
 
-	return headerH + 24 // body starts below the divider
+	return headerH + 28 // body starts below the divider
 }
 
 // DrawCenteredText draws text centered at (cx, cy).

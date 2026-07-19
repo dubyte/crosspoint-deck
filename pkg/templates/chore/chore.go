@@ -30,17 +30,23 @@ func (c *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, c.Title, W, 22, c.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, c.Title, W, 26, c.FontPath)
 
-	_ = layout.LoadFontFace(dc, c.FontPath, 16)
+	_ = layout.LoadFontFace(dc, c.FontPath, 20)
 	colW := float64(W) / 2
-	startY := bodyY + 8
+	startY := bodyY + 12
+	lineH := 38.0
+	perCol := 10
+	if c.Portrait {
+		perCol = 18
+	}
+
 	for i, chore := range c.Chores {
-		y := startY + float64((i%12)*30)
-		x := 30.0
-		if i >= 12 && !c.Portrait {
-			x = colW + 30
-			y = startY + float64((i-12)*30)
+		y := startY + float64((i%perCol))*lineH
+		x := 40.0
+		if i >= perCol && !c.Portrait {
+			x = colW + 40
+			y = startY + float64((i-perCol))*lineH
 		}
 		if y > float64(H)-20 {
 			break

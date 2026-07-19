@@ -37,10 +37,10 @@ func (w *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	bodyY := layout.DrawReversedHeader(dc, w.Title, W, 22, w.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, w.Title, W, 26, w.FontPath)
 
-	// Rounds/rest line
-	metaY := bodyY + 14
+	// Rounds/rest
+	metaY := bodyY + 16
 	meta := ""
 	if w.Rounds != "" {
 		meta = "Rounds: " + w.Rounds
@@ -52,40 +52,36 @@ func (w *Card) Render() image.Image {
 		meta += "Rest: " + w.Rest + "s"
 	}
 	if meta != "" {
-		_ = layout.LoadFontFace(dc, w.FontPath, 14)
+		_ = layout.LoadFontFace(dc, w.FontPath, 18)
 		dc.SetColor(color.Black)
 		dc.DrawStringAnchored(meta, float64(W)/2, metaY, 0.5, 0.5)
-		metaY += 30
+		metaY += 36
 	}
 
 	// Exercises
-	startY := metaY + 8
-	lineH := 32.0
+	startY := metaY + 10
+	lineH := 40.0
 	for i, ex := range w.Exercises {
 		y := float64(startY) + float64(i)*lineH
 		if y > float64(H)-30 {
 			break
 		}
 
-		_ = layout.LoadFontFace(dc, w.FontPath, 16)
+		_ = layout.LoadFontFace(dc, w.FontPath, 20)
 		dc.SetColor(color.Black)
 		num := string(rune('1'+i)) + ". "
 		nw, _ := dc.MeasureString(num)
 		dc.DrawString(num, 30, y)
 
-		_ = layout.LoadFontFaceBold(dc, w.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, w.FontPath, 20)
 		dc.DrawString(ex.Name, 30+nw, y)
 
-		_ = layout.LoadFontFace(dc, w.FontPath, 16)
-		dc.DrawString(" · "+ex.Reps, 30+nw+dcMeasure(dc, ex.Name), y)
+		_ = layout.LoadFontFace(dc, w.FontPath, 20)
+		ew, _ := dc.MeasureString(ex.Name)
+		dc.DrawString(" · "+ex.Reps, 30+nw+ew, y)
 	}
 
 	return dc.Image()
-}
-
-func dcMeasure(dc *gg.Context, s string) float64 {
-	w, _ := dc.MeasureString(s)
-	return w
 }
 
 func Spec() card.Spec {

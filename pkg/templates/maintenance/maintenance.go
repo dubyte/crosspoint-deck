@@ -39,24 +39,23 @@ func (m *Card) Render() image.Image {
 	if m.Year != "" {
 		title += " " + m.Year
 	}
-	bodyY := layout.DrawReversedHeader(dc, title, W, 22, m.FontPath)
+	bodyY := layout.DrawReversedHeader(dc, title, W, 26, m.FontPath)
 
-	startY := bodyY + 16
-	lineH := 28.0
-	_ = layout.LoadFontFace(dc, m.FontPath, 16)
+	startY := bodyY + 20
+	lineH := 38.0
 	for i, t := range m.Tasks {
 		y := float64(startY) + float64(i)*lineH
 		if y > float64(H)-30 {
 			break
 		}
 
-		_ = layout.LoadFontFaceBold(dc, m.FontPath, 16)
+		_ = layout.LoadFontFaceBold(dc, m.FontPath, 20)
 		dc.SetColor(color.Black)
 		w, _ := dc.MeasureString(t.Name)
-		dc.DrawString(t.Name, float64(W)/2-w-8, y)
+		dc.DrawString(t.Name, float64(W)/2-w-10, y)
 
-		_ = layout.LoadFontFace(dc, m.FontPath, 16)
-		dc.DrawString(t.Month, float64(W)/2+8, y)
+		_ = layout.LoadFontFace(dc, m.FontPath, 20)
+		dc.DrawString(t.Month, float64(W)/2+10, y)
 	}
 
 	return dc.Image()
