@@ -33,37 +33,60 @@ func CalendarPortrait() error {
 	return sh.Run("./deck", "calendar", "--year", "2026", "--portrait", "--output", "./output/calendar-2026-portrait.bmp")
 }
 
-// CalendarWithFont generates a calendar using a custom font path.
-func CalendarWithFont() error {
+// WiFi generates a WiFi access card.
+func WiFi() error {
 	mg.Deps(Build)
-	font := findSystemFont()
-	if font == "" {
-		return fmt.Errorf("no system font found; use --font flag manually")
-	}
-	fmt.Printf("Generating calendar with font: %s\n", font)
-	return sh.Run("./deck", "calendar", "--year", "2026", "--font", font, "--output", "./output/calendar-2026.bmp")
+	fmt.Println("Generating WiFi card...")
+	return sh.Run("./deck", "wifi", "--ssid", "MyNetwork", "--password", "secret123", "--output", "./output/wifi.bmp")
 }
 
-// All generates both landscape and portrait calendars.
+// Business generates a business card.
+func Business() error {
+	mg.Deps(Build)
+	fmt.Println("Generating business card...")
+	return sh.Run("./deck", "business", "--name", "John Doe", "--title", "Developer", "--phone", "+1-555-0100", "--email", "john@example.com", "--output", "./output/business.bmp")
+}
+
+// Cheatsheet generates a shortcuts cheat sheet.
+func Cheatsheet() error {
+	mg.Deps(Build)
+	fmt.Println("Generating cheat sheet...")
+	return sh.Run("./deck", "cheatsheet", "--title", "Vim", "--shortcuts", "i:insert,Esc:normal,:w:save,:q:quit", "--output", "./output/cheatsheet.bmp")
+}
+
+// All generates all card types.
 func All() error {
-	mg.Deps(Calendar, CalendarPortrait)
-	fmt.Println("All calendars generated.")
+	mg.Deps(Calendar, CalendarPortrait, WiFi, Business, Cheatsheet)
+	fmt.Println("All cards generated.")
 	return nil
 }
 
-// Verify runs go vet and checks the BMP output format.
+// Verify runs go vet, tests, and checks the BMP output format.
 func Verify() error {
 	fmt.Println("Running go vet...")
 	if err := sh.Run("go", "vet", "./..."); err != nil {
 		return err
 	}
 
-	if _, err := os.Stat("./output/calendar-2026.bmp"); err == nil {
-		fmt.Println("Checking BMP format...")
-		return sh.Run("file", "./output/calendar-2026.bmp")
+	fmt.Println("Running tests...")
+	if err := sh.Run("go", "test", "./..."); err != nil {
+		return err
 	}
 
-	fmt.Println("No BMP found to verify. Run 'mage calendar' first.")
+	for _, f := range []string{
+		"./output/calendar-2026.bmp",
+		"./output/wifi.bmp",
+		"./output/business.bmp",
+		"./output/cheatsheet.bmp",
+	} {
+		if _, err := os.Stat(f); err == nil {
+			fmt.Printf("Checking %s...\n", f)
+			if err := sh.Run("file", f); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -82,20 +105,4 @@ func Clean() error {
 	return nil
 }
 
-// findSystemFont attempts to locate a suitable TTF on the host.
-func findSystemFont() string {
-	candidates := []string{
-		"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-		"/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-		"/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
-		"/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-		"/System/Library/Fonts/Helvetica.ttc",
-		"/Windows/Fonts/arial.ttf",
-	}
-	for _, p := range candidates {
-		if _, err := os.Stat(p); err == nil {
-			return p
-		}
-	}
-	return ""
-}
+
