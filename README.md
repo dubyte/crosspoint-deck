@@ -10,7 +10,7 @@ E-ink excels at static, high-contrast information that you reference in seconds,
 
 ## What It Does
 
-- **Generates cards** — scripts and templates that produce `.bmp` images optimized for the X4's monochrome display.
+- **Generates cards** — Go templates that produce `.bmp` images with anti-aliased rendering for the X4's 4-level grayscale display (SSD1677 controller).
 - **Organizes collections** — cards are grouped into folders (e.g., `/Cards/Work/`, `/Cards/Travel/`) that the firmware's existing file browser navigates natively.
 - **Syncs upstream** — cards are pushed to the device through the same WebSocket/HTTP upload pipeline that `crosspoint-sync` uses for EPUBs. No custom protocol, no firmware patch.
 
@@ -23,7 +23,7 @@ E-ink excels at static, high-contrast information that you reference in seconds,
 ## Target Hardware
 
 - **Device:** XTEink X4 (ESP32-C3, 800×480 monochrome e-ink, ~380 KB usable RAM)
-- **Display:** Single 48 KB framebuffer. Monochrome (1-bit) with optional grayscale support.
+- **Display:** 4-level grayscale via SSD1677 controller (white, light gray, dark gray, black). BMP encoder preserves anti-aliased edges; device dithers natively.
 - **Storage:** SD card. Cards live as ordinary files in ordinary folders.
 - **Navigation:** Firmware file browser + native BMP viewer (prev/next through sibling `.bmp` files in the same folder).
 
@@ -41,7 +41,7 @@ E-ink excels at static, high-contrast information that you reference in seconds,
 └─────────────────┘     └──────────────────┘
 ```
 
-1. A template or script renders a card to an **uncompressed 24-bit BMP** at exactly 800×480 pixels.
+1. A template renders a card to an **uncompressed 24-bit BMP** at exactly 800×480 pixels (or 480×800 portrait). Anti-aliased edges and subtle shading are preserved for the X4's grayscale display.
 2. The BMP is placed in a collection folder (e.g., `/Cards/Business/`).
 3. `crosspoint-sync` (or a manual copy) pushes the folder to the SD card.
 4. On the device, you browse to the folder and select the `.bmp`. The native viewer opens it full-screen.
@@ -111,14 +111,14 @@ Run `deck --help` to see all commands.
 
 | Command | Description |
 |---|---|
-| `calendar` | Year-at-a-glance calendar (landscape/portrait) |
-| `wifi` | WiFi access card with QR code |
-| `business` | Business card with QR vCard |
-| `cheatsheet` | Keyboard shortcuts cheat sheet |
-| `meeting` | Meeting room schedule |
-| `packing` | Packing checklist |
-| `emergency` | Emergency contact card |
-| `habit` | Habit tracker grid |
+| `calendar` | Year-at-a-glance calendar with month gaps (landscape/portrait) |
+| `wifi` | WiFi access card with QR code and bold labels |
+| `business` | Business card with QR vCard and reversed header |
+| `cheatsheet` | Keyboard shortcuts cheat sheet with bold key bindings |
+| `meeting` | Meeting room schedule with reversed room header |
+| `packing` | Packing checklist with checkbox items |
+| `emergency` | Emergency contact card with bold labels |
+| `habit` | Habit tracker grid with bold habit names |
 
 ## Starter Packs
 
@@ -133,6 +133,7 @@ $ mage Packs            # All packs
 ```
 
 A `.deckpack.zip` contains:
+
 - `bmps/` — pre-rendered BMP files
 - `manifest.json` — pack metadata (name, author, tags)
 - `preview.png` — thumbnail for gallery display
@@ -141,10 +142,12 @@ A `.deckpack.zip` contains:
 
 CrossPoint Deck is in active development. Current capabilities:
 
-- Pure-Go BMP encoder (24-bit uncompressed)
+- Pure-Go BMP encoder (24-bit uncompressed, preserves grayscale)
 - Registry-based template system (add a template in 2 steps)
-- 8 card types across 6 categories
-- Pack generation and distribution format
+- 8 card types across 6 categories with unified design system
+- Reversed black header bar + bold/regular typographic hierarchy on all cards
+- 4-level grayscale support for the X4's SSD1677 display controller
+- Pack generation and distribution format (`.deckpack.zip`)
 - Mage-based build automation
 
 See [ROADMAP.md](./ROADMAP.md) for planned phases.
