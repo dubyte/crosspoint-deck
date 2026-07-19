@@ -117,6 +117,13 @@ func Nato() error {
 	return sh.Run("./deck", "nato", "--output", "./output/nato.bmp")
 }
 
+// Owner generates an owner identification card.
+func Owner() error {
+	mg.Deps(Build)
+	fmt.Println("Generating owner card...")
+	return sh.Run("./deck", "owner", "--name", "John Doe", "--email", "john@example.com", "--output", "./output/owner.bmp")
+}
+
 // Morse generates a Morse code reference card.
 func Morse() error {
 	mg.Deps(Build)

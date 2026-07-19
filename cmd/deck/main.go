@@ -22,6 +22,7 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/meeting"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/morse"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/nato"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/owner"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/packing"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/plant"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/recipe"
@@ -49,6 +50,7 @@ var registry = []card.Spec{
 	meeting.Spec(),
 	morse.Spec(),
 	nato.Spec(),
+	owner.Spec(),
 	packing.Spec(),
 	plant.Spec(),
 	recipe.Spec(),
