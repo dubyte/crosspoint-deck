@@ -76,16 +76,31 @@ func (y *YearCard) Render() image.Image {
 }
 
 func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath string) {
+	// Use smaller fonts when cell is tight (landscape), larger when roomy (portrait).
+	tight := ch < 140
+	monthSize, headerSize, daySize := 18.0, 14.0, 16.0
+	monthOff := 16.0
+	headerOff := 34.0
+	dayOff := 18.0
+	dayBase := 52.0
+	if tight {
+		monthSize, headerSize, daySize = 14, 12, 12
+		monthOff = 12
+		headerOff = 26
+		dayOff = 14
+		dayBase = 40
+	}
+
 	// Month name in bold
-	_ = layout.LoadFontFaceBold(dc, fontPath, 18)
+	_ = layout.LoadFontFaceBold(dc, fontPath, monthSize)
 	dc.SetColor(color.Black)
 	monthName := t.Format("Jan")
-	dc.DrawStringAnchored(monthName, x0+cw/2, y0+16, 0.5, 0.5)
+	dc.DrawStringAnchored(monthName, x0+cw/2, y0+monthOff, 0.5, 0.5)
 
 	// Day headers: S M T W T F S
-	_ = layout.LoadFontFace(dc, fontPath, 14)
+	_ = layout.LoadFontFace(dc, fontPath, headerSize)
 	days := []string{"S", "M", "T", "W", "T", "F", "S"}
-	headerY := y0 + 34
+	headerY := y0 + headerOff
 	cellW := cw / 7
 	for i, d := range days {
 		dc.DrawStringAnchored(d, x0+cellW*float64(i)+cellW/2, headerY, 0.5, 0.5)
@@ -96,10 +111,10 @@ func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath str
 	lastDay := firstDay.AddDate(0, 1, -1)
 	startWeekday := int(firstDay.Weekday()) // 0=Sunday
 
-	dayY := headerY + 18
-	dayH := (ch - 52) / 6
+	dayY := headerY + dayOff
+	dayH := (ch - dayBase) / 6
 
-	_ = layout.LoadFontFace(dc, fontPath, 16)
+	_ = layout.LoadFontFace(dc, fontPath, daySize)
 	day := 1
 	for week := 0; week < 6; week++ {
 		for wd := 0; wd < 7; wd++ {
