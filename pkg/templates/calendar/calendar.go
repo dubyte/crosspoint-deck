@@ -1,13 +1,15 @@
 package calendar
 
 import (
+	"flag"
 	"fmt"
 	"image"
 	"image/color"
-	"os"
 	"time"
 
 	"github.com/fogleman/gg"
+	"github.com/dubyte/crosspoint-deck/pkg/card"
+	"github.com/dubyte/crosspoint-deck/pkg/layout"
 )
 
 // YearCard renders a year-at-a-glance calendar.
@@ -39,14 +41,7 @@ func (y *YearCard) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	// Try to load a font
-	fontPath := y.FontPath
-	if fontPath == "" {
-		fontPath = findFont()
-	}
-	if fontPath != "" {
-		_ = dc.LoadFontFace(fontPath, 14)
-	}
+	_ = layout.LoadFontFace(dc, y.FontPath, 14)
 
 	// Title: year
 	dc.SetColor(color.Black)
@@ -109,19 +104,17 @@ func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64) {
 	}
 }
 
-func findFont() string {
-	candidates := []string{
-		"/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-		"/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-		"/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
-		"/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-		"/System/Library/Fonts/Helvetica.ttc",           // macOS
-		"/Windows/Fonts/arial.ttf",                       // Windows
+// Spec returns the card.Spec for calendar.
+func Spec() card.Spec {
+	return card.Spec{
+		Name:  "calendar",
+		Usage: "Generate a year-at-a-glance calendar card",
+		New: func(fs *flag.FlagSet) card.Card {
+			c := &YearCard{}
+			fs.IntVar(&c.Year, "year", time.Now().Year(), "Year to render")
+			fs.BoolVar(&c.Portrait, "portrait", false, "Render in portrait orientation (480x800)")
+			fs.StringVar(&c.FontPath, "font", "", "Path to TTF font (optional)")
+			return c
+		},
 	}
-	for _, p := range candidates {
-		if _, err := os.Stat(p); err == nil {
-			return p
-		}
-	}
-	return ""
 }

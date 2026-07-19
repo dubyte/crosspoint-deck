@@ -5,11 +5,21 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
+	"github.com/dubyte/crosspoint-deck/pkg/card"
 	"github.com/dubyte/crosspoint-deck/pkg/render"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/business"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/calendar"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/cheatsheet"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/wifi"
 )
+
+var registry = []card.Spec{
+	calendar.Spec(),
+	wifi.Spec(),
+	business.Spec(),
+	cheatsheet.Spec(),
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -17,35 +27,43 @@ func main() {
 		os.Exit(1)
 	}
 
-	switch os.Args[1] {
-	case "calendar":
-		calendarCmd(os.Args[2:])
-	default:
-		fmt.Fprintf(os.Stderr, "unknown command: %s\n", os.Args[1])
+	cmd := os.Args[1]
+	if cmd == "help" || cmd == "-h" || cmd == "--help" {
 		usage()
-		os.Exit(1)
+		os.Exit(0)
 	}
+
+	for _, spec := range registry {
+		if spec.Name == cmd {
+			runSpec(spec, os.Args[2:])
+			return
+		}
+	}
+
+	fmt.Fprintf(os.Stderr, "unknown command: %s\n", cmd)
+	usage()
+	os.Exit(1)
 }
 
 func usage() {
-	fmt.Print(`Usage: deck <command> [flags]
-
-Commands:
-  calendar    Generate a year-at-a-glance calendar card
-
+	fmt.Print("Usage: deck <command> [flags]\n\nCommands:\n")
+	for _, spec := range registry {
+		fmt.Printf("  %-12s %s\n", spec.Name, spec.Usage)
+	}
+	fmt.Print(`
 Examples:
   deck calendar --year 2026 --output ./output/calendar-2026.bmp
-  deck calendar --year 2026 --portrait --output ./output/calendar-2026-portrait.bmp
-  deck calendar --year 2026 --font /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf --output ./output/calendar-2026.bmp
+  deck wifi --ssid MyNetwork --password secret --output ./output/wifi.bmp
+  deck business --name "John Doe" --phone "+1-555-0100" --output ./output/card.bmp
+  deck cheatsheet --title "Vim" --output ./output/vim.bmp
 `)
 }
 
-func calendarCmd(args []string) {
-	fs := flag.NewFlagSet("calendar", flag.ExitOnError)
-	year := fs.Int("year", timeNowYear(), "Year to render")
-	portrait := fs.Bool("portrait", false, "Render in portrait orientation (480x800)")
-	out := fs.String("output", "calendar.bmp", "Output BMP file path")
-	font := fs.String("font", "", "Path to TTF font (optional)")
+func runSpec(spec card.Spec, args []string) {
+	fs := flag.NewFlagSet(spec.Name, flag.ExitOnError)
+	out := fs.String("output", spec.Name+".bmp", "Output BMP file path")
+
+	c := spec.New(fs)
 	_ = fs.Parse(args)
 
 	if err := os.MkdirAll(filepath.Dir(*out), 0755); err != nil {
@@ -53,20 +71,10 @@ func calendarCmd(args []string) {
 		os.Exit(1)
 	}
 
-	card := &calendar.YearCard{
-		Year:     *year,
-		Portrait: *portrait,
-		FontPath: *font,
-	}
-
-	if err := render.ToFile(card, *out); err != nil {
+	if err := render.ToFile(c, *out); err != nil {
 		fmt.Fprintf(os.Stderr, "error: render: %v\n", err)
 		os.Exit(1)
 	}
 
 	fmt.Printf("generated: %s\n", *out)
-}
-
-func timeNowYear() int {
-	return time.Now().Year()
 }
