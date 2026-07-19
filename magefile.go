@@ -54,9 +54,37 @@ func Cheatsheet() error {
 	return sh.Run("./deck", "cheatsheet", "--title", "Vim", "--shortcuts", "i:insert,Esc:normal,:w:save,:q:quit", "--output", "./output/cheatsheet.bmp")
 }
 
+// Meeting generates a meeting room schedule card.
+func Meeting() error {
+	mg.Deps(Build)
+	fmt.Println("Generating meeting schedule...")
+	return sh.Run("./deck", "meeting", "--room", "Boardroom", "--output", "./output/meeting.bmp")
+}
+
+// Packing generates a packing checklist.
+func Packing() error {
+	mg.Deps(Build)
+	fmt.Println("Generating packing list...")
+	return sh.Run("./deck", "packing", "--title", "Trip", "--items", "Passport,Phone,Charger,Camera,Snacks", "--output", "./output/packing.bmp")
+}
+
+// Emergency generates an emergency contact card.
+func Emergency() error {
+	mg.Deps(Build)
+	fmt.Println("Generating emergency card...")
+	return sh.Run("./deck", "emergency", "--country", "USA", "--contacts", "Police:911,Fire:911,Ambulance:911", "--blood", "O+", "--output", "./output/emergency.bmp")
+}
+
+// Habit generates a habit tracker.
+func Habit() error {
+	mg.Deps(Build)
+	fmt.Println("Generating habit tracker...")
+	return sh.Run("./deck", "habit", "--title", "Daily Habits", "--habits", "Read,Exercise,Meditate", "--days", "7", "--output", "./output/habit.bmp")
+}
+
 // All generates all card types.
 func All() error {
-	mg.Deps(Calendar, CalendarPortrait, WiFi, Business, Cheatsheet)
+	mg.Deps(Calendar, CalendarPortrait, WiFi, Business, Cheatsheet, Meeting, Packing, Emergency, Habit)
 	fmt.Println("All cards generated.")
 	return nil
 }

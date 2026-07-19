@@ -11,6 +11,10 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/business"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/calendar"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/cheatsheet"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/emergency"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/habit"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/meeting"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/packing"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/wifi"
 )
 
@@ -19,6 +23,10 @@ var registry = []card.Spec{
 	wifi.Spec(),
 	business.Spec(),
 	cheatsheet.Spec(),
+	meeting.Spec(),
+	packing.Spec(),
+	emergency.Spec(),
+	habit.Spec(),
 }
 
 func main() {
