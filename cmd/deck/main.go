@@ -82,6 +82,14 @@ func main() {
 
 	cmd := args[0]
 	if cmd == "help" || cmd == "-h" || cmd == "--help" {
+		if len(args) > 1 {
+			for _, spec := range registry {
+				if spec.Name == args[1] {
+					subHelp(spec)
+					os.Exit(0)
+				}
+			}
+		}
 		usage()
 		os.Exit(0)
 	}
@@ -96,6 +104,19 @@ func main() {
 	fmt.Fprintf(os.Stderr, "unknown command: %s\n", cmd)
 	usage()
 	os.Exit(1)
+}
+
+func subHelp(spec card.Spec) {
+	fs := flag.NewFlagSet(spec.Name, flag.ExitOnError)
+	out := fs.String("output", spec.Name+".bmp", "Output BMP file path")
+	spec.New(fs)
+	fs.SetOutput(os.Stdout)
+	fs.Usage = func() {
+		fmt.Printf("%s — %s\n\nFlags:\n", spec.Name, spec.Usage)
+		fs.PrintDefaults()
+	}
+	fs.Usage()
+	_ = out
 }
 
 func usage() {
@@ -117,6 +138,10 @@ func runSpec(spec card.Spec, display string, args []string) {
 	out := fs.String("output", spec.Name+".bmp", "Output BMP file path")
 
 	c := spec.New(fs)
+	fs.Usage = func() {
+		fmt.Printf("%s — %s\n\nFlags:\n", spec.Name, spec.Usage)
+		fs.PrintDefaults()
+	}
 	_ = fs.Parse(args)
 
 	if err := os.MkdirAll(filepath.Dir(*out), 0755); err != nil {
