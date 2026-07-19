@@ -7,9 +7,9 @@ import (
 	"image/color"
 	"time"
 
-	"github.com/fogleman/gg"
 	"github.com/dubyte/crosspoint-deck/pkg/card"
 	"github.com/dubyte/crosspoint-deck/pkg/layout"
+	"github.com/fogleman/gg"
 )
 
 // YearCard renders a year-at-a-glance calendar.
@@ -47,16 +47,17 @@ func (y *YearCard) Render() image.Image {
 	dc.SetColor(color.Black)
 	dc.DrawStringAnchored(fmt.Sprintf("%d", y.Year), float64(W)/2, 24, 0.5, 0.5)
 
-	cellW := float64(W) / float64(cols)
-	cellH := (float64(H) - 48) / float64(rows) // leave top 48px for title + margin
+	gap := 20.0
+	cellW := (float64(W) - gap*float64(cols-1)) / float64(cols)
+	cellH := (float64(H) - 48 - gap*float64(rows-1)) / float64(rows)
 
 	startMonth := time.Date(y.Year, time.January, 1, 0, 0, 0, 0, time.UTC)
 
 	for m := 0; m < 12; m++ {
 		col := m % cols
 		row := m / cols
-		x0 := float64(col) * cellW
-		y0 := 48 + float64(row)*cellH
+		x0 := float64(col) * (cellW + gap)
+		y0 := 48 + float64(row)*(cellH+gap)
 
 		monthDate := startMonth.AddDate(0, m, 0)
 		drawMonth(dc, monthDate, x0, y0, cellW, cellH)
