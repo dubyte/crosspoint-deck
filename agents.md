@@ -20,8 +20,8 @@ The firmware's native image pipeline is the only rendering engine Deck may use. 
 - **BMP specs that work:** Uncompressed BMP with 24-bit color depth. Other bit depths may not be handled by the parser.
 - **Resolution target:** 800 × 480 (portrait). The viewer scales images that are larger, but scales down (not up) with centering. For pixel-perfect clarity, match the panel exactly.
 - **Orientation:** The firmware supports four orientations (Portrait, Inverted, Landscape CW, Landscape CCW). The BMP viewer does not rotate images automatically; if you want landscape cards, generate them at 480 × 800 or accept portrait cropping.
-- **Grayscale:** The display is 1-bit black/white. The firmware can simulate grayscale via dithering (`drawBitmap` + `displayGrayBuffer` with MSB/LSB passes), but this is **slower** and visually softer. For card content that must be crisp (text, QR codes, fine lines), use **pure black and white** (no grayscale).
-- **Contrast:** E-ink has limited contrast ratio. Thin gray lines or low-contrast color pairs disappear. Always maximize contrast: black on white or white on black.
+- **Grayscale:** The SSD1677 display controller supports 4-level grayscale (white, light gray, dark gray, black) via its native dithering of 24-bit input. The Deck BMP encoder preserves actual pixel values — anti-aliased font edges and subtle shading pass through to the device, which dithers them in hardware. This gives smoother text rendering than hard-thresholded B&W. Reserve heavy dithering (photographic halftones) for photo cards only.
+- **Contrast:** E-ink has limited contrast ratio. Thin gray lines or low-contrast color pairs disappear. Always maximize contrast: black on white or white on black. The reversed header pattern (white text on black bar) performs well.
 
 ### 1.3 File Discovery & Browsing
 
@@ -101,7 +101,7 @@ The recommended pipeline for card generation:
 
 1. **Design in SVG** (or programmatic SVG generation).
    - Use precise coordinates; text should be converted to paths or use known font metrics.
-   - Color must be reduced to black (`#000000`) and white (`#FFFFFF`) only. No anti-aliased grays.
+   - The X4 dithers 24-bit input to 4 grayscale levels; anti-aliased edges render smoothly. Design in B&W but don't strip anti-aliasing.
 2. **Rasterize to exact resolution.**
    - Target: 800 × 480 px.
    - If the design is landscape-first, render at 480 × 800 and accept that the viewer will display it in the current orientation without rotation.
@@ -118,9 +118,9 @@ The recommended pipeline for card generation:
 ### 3.3 Contrast and Legibility Requirements
 
 - **Minimum line thickness:** 2 px for black lines on white. 1 px lines can disappear in e-ink ghosting.
-- **Text size:** No smaller than 12 px height for body text; 16 px preferred. E-ink dot gain makes small text bleed.
+- **Text size:** No smaller than 12 px height for body text; 14–16 px preferred. Calendar day numbers at 14px are readable on-device.
 - **QR codes:** Use a minimum quiet zone of 4 modules. Test at actual display size; high-density QR codes may fail to scan if dithered.
-- **Dithering:** Do not use Floyd-Steinberg or ordered dither for text/line art. Use thresholding (black if luminance < 128, else white). Reserve grayscale simulation for photographs only, and only if the card design explicitly needs them.
+- **Dithering:** The X4's SSD1677 controller handles dithering in hardware. Do not apply software dithering (Floyd-Steinberg, ordered) before encoding — let the device's native pipeline handle it. The BMP encoder writes actual 24-bit pixel values without thresholding.
 
 ### 3.4 Folder Naming Conventions
 
@@ -177,8 +177,8 @@ Before generating or modifying card assets, confirm:
 
 - [ ] Output format is uncompressed 24-bit BMP.
 - [ ] Resolution matches 800 × 480 (X4 portrait) or 480 × 800 (X4 landscape, if accepting no auto-rotation).
-- [ ] Design is pure black and white for text/line-art cards; grayscale only if explicitly needed.
+- [ ] Design uses high-contrast B&W with anti-aliased edges preserved (no hard threshold in encoder).
 - [ ] Folder structure is under `/Cards/` or a user-defined root, not mixed with `/Books/` or `/Articles/`.
 - [ ] No firmware code, no mobile app code, no new network protocols were introduced.
 - [ ] File sizes are reasonable (~1 MB per card, not 10 MB).
-- [ ] Contrast is verified by thresholding the design to 1-bit.
+- [ ] Card renders without warnings (the `render: warning: non-black/white pixels` message was removed in favor of grayscale support).
