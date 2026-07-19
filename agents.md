@@ -1,184 +1,104 @@
 # Agent Instructions: CrossPoint Deck
 
-This document is a reference for any AI agent or human contributor working on the `crosspoint-deck` repository. It records the discovered constraints of the upstream CrossPoint ecosystem and sets architectural boundaries for this project.
+## Project
 
-## 1. Ecosystem Constraints (Discovered from Source)
+Go CLI + library that generates 800×480 monochrome BMP "cards" for the XTEink X4 e-ink reader. Cards are single-page utilities (calendars, QR codes, cheat sheets) synced to the device via the upstream `crosspoint-sync` pipeline.
 
-### 1.1 Target Hardware — XTEink X4
+## Build & Dev Commands
 
-- **MCU:** ESP32-C3 (single-core RISC-V @ 160 MHz)
-- **RAM:** ~380 KB usable. **No PSRAM.** This is a hard ceiling.
-- **Display:** 800 × 480 pixels, monochrome e-ink, single 48 KB framebuffer.
-- **Storage:** SD card (FAT32). All card assets must live on SD card as ordinary files.
-- **Refresh:** Slow. Full updates take 1–2 seconds. Partial/fast refreshes are possible but the BMP viewer uses `HALF_REFRESH` for initial display.
+- **Task runner:** [Mage](https://magefile.org/). Targets are Go functions in `magefile.go` and `packs.go`.
+  - `mage -l` — list tasks
+  - `mage` — default is `Build`
+  - `mage verify` — `go vet` + `go test ./...` + `file` check on output BMPs
+  - `mage all` — generate every card type
+  - `mage clean` — remove `deck` binary and `./output/`
+- **Direct CLI:**
+  - `go build ./cmd/deck` — produces `./deck` binary
+  - `./deck <command> --output ./output/foo.bmp` — generate a single card
+  - `./deck --display portrait|landscape <command>` — override orientation
+- **No `make`, no Docker, no CI config in repo.**
 
-### 1.2 Firmware Rendering Engine — CrossPoint Reader
+## Architecture (Non-Obvious)
 
-The firmware's native image pipeline is the only rendering engine Deck may use. Key behaviors:
+### Entrypoint & Registry
 
-- **Supported image format:** `.bmp` only. The firmware has a native `Bitmap` parser and `BmpViewerActivity`.
-- **BMP specs that work:** Uncompressed BMP with 24-bit color depth. Other bit depths may not be handled by the parser.
-- **Resolution target:** 800 × 480 (portrait). The viewer scales images that are larger, but scales down (not up) with centering. For pixel-perfect clarity, match the panel exactly.
-- **Orientation:** The firmware supports four orientations (Portrait, Inverted, Landscape CW, Landscape CCW). The BMP viewer does not rotate images automatically; if you want landscape cards, generate them at 480 × 800 or accept portrait cropping.
-- **Grayscale:** The SSD1677 display controller supports 4-level grayscale (white, light gray, dark gray, black) via its native dithering of 24-bit input. The Deck BMP encoder preserves actual pixel values — anti-aliased font edges and subtle shading pass through to the device, which dithers them in hardware. This gives smoother text rendering than hard-thresholded B&W. Reserve heavy dithering (photographic halftones) for photo cards only.
-- **Contrast:** E-ink has limited contrast ratio. Thin gray lines or low-contrast color pairs disappear. Always maximize contrast: black on white or white on black. The reversed header pattern (white text on black bar) performs well.
+- `cmd/deck/main.go` holds the **only** registry: a `[]card.Spec` slice. Adding a card type requires **two steps**:
+  1. Create `pkg/templates/<name>/` with `Spec()` + `Render()`
+  2. Add one import + one `spec.Name()` call in `main.go`
+- **No `init()` magic, no reflection, no auto-discovery.** The registry is intentionally explicit and debuggable.
 
-### 1.3 File Discovery & Browsing
+### Package Layout
 
-- The firmware's **Browse Files** screen lists all files and folders on the SD card. Hidden dotfiles (starting with `.`) are hidden unless the user enables `showHiddenFiles`.
-- Selecting a `.bmp` file opens `BmpViewerActivity`, which renders it full-screen.
-- If multiple `.bmp` files exist in the same folder, the viewer provides **prev/next navigation** using the side buttons (Left/Right or Volume Up/Down). This means a folder of cards is naturally a swipeable deck.
-- The viewer also offers a "Set as sleep cover" action (Confirm button), so any card can become the sleep screen.
+| Package | Purpose |
+|---|---|
+| `pkg/card/` | `Card` interface (`Render() image.Image`) + `Spec` struct + `AssertDimensions` test helper |
+| `pkg/render/` | `ToFile(c, display, path)` — validates dimensions, rotates if needed, calls `bmp.Encode` |
+| `pkg/bmp/` | Pure-Go encoder: uncompressed 24-bit BMP, no compression, preserves grayscale values |
+| `pkg/layout/` | Shared drawing primitives: `DrawReversedHeader`, `LoadFontFace`/`LoadFontFaceBold`, `Grid`, `DrawWrappedText` |
+| `pkg/qr/` | QR code generation wrapper |
+| `pkg/pack/` | `.deckpack.zip` builder (BMPs + `manifest.json` + `preview.png`) |
+| `pkg/templates/<name>/` | One package per card type. Each exports `Spec() card.Spec` |
 
-### 1.4 Sync Pipeline — CrossPoint Sync
+### Design System (Enforced Convention)
 
-`crosspoint-sync` is the companion iOS app. Deck must interoperate with it, not replace it.
+Every card **must** use:
+- **Reversed black header bar** (`layout.DrawReversedHeader`) with white bold title
+- **2px black divider** below the header
+- **Bold label + regular value** typographic hierarchy
+- **Pure black (#000000) and white (#FFFFFF)** only. Grayscale is handled by the X4's hardware dithering; do NOT threshold or apply software dithering.
+- **Minimum line thickness:** 2 px. 1 px lines disappear on e-ink.
+- **Minimum text size:** 12 px height; 14–16 px preferred.
 
-- **Discovery:** UDP broadcast on port 8134, or manual IP entry.
-- **HTTP API (port 80):**
-  - `GET /api/files?path=/Folder` — list files
-  - `POST /mkdir` — create folders
-  - `POST /upload` — HTTP multipart upload (fallback)
-  - `POST /delete` — delete files
-- **WebSocket Upload (port 81):**
-  - Protocol: `START:filename:size:path` → `READY` → binary chunks (64 KB window) → `PROGRESS:received:total` → `DONE`
-  - Chunk size: 4 KB; window: 16 chunks (64 KB) before backpressure wait.
-  - The app uses `react-native-udp` and requires a native dev build (Expo Go is insufficient).
-- **Default paths:** The sync app uploads EPUBs to `/` by default and clipped articles to `/Articles`. Deck should use its own folder (e.g., `/Cards/`) to avoid cluttering the book root.
-- **Folder creation:** `ensureRemotePath` recursively creates missing folders before upload.
+### Orientation Rules
 
-### 1.5 Memory & Performance Boundaries
+- Cards render at **800×480** (landscape, default) or **480×800** (portrait).
+- The `Card.Render()` implementation decides content orientation via a `Portrait bool` field (or similar).
+- `render.ToFile` auto-rotates 90° clockwise if the `display` arg (from `--display` flag) differs from content orientation. **Do not rotate in the template.**
 
-- **Firmware RAM budget:** Any payload that forces the firmware to allocate large temporary buffers risks an OOM reboot. BMPs are streamed from SD card during rendering, but the parser may allocate line buffers. Keep BMP row widths reasonable (800 px × 3 bytes = 2.4 KB per row — trivial).
-- **File size:** Uncompressed 800×480×24-bit BMP = ~1.15 MB per card. This is acceptable for SD card storage but should not grow larger unnecessarily. Do not embed high-resolution photos; use vector-based designs.
-- **No server-side rendering on device:** Do not propose running Python, Node, or any interpreter on the ESP32. All generation happens on the host (phone or computer) before sync.
+### Font Loading
 
-## 2. Architectural Boundaries
+- `layout.LoadFontFace` / `LoadFontFaceBold` accept an optional `--font` path.
+- If empty, they walk a **hardcoded system font fallback chain**: DejaVu → Liberation → Noto → Helvetica → Arial (bold variants for bold).
+- If no font is found, rendering fails. On headless CI, install `fonts-dejavu-core` or similar.
 
-### 2.1 What CrossPoint Deck Is
+## Adding a New Card Type
 
-- A **content generator.** It produces static `.bmp` files and folder structures.
-- A **consumer of the sync API.** It hands files to `crosspoint-sync` (or instructs the user to copy them manually).
-- **Display-agnostic in design, display-specific in output.** Templates can be authored in SVG/HTML/CSS at arbitrary resolution, but the render pipeline must export exact 800×480 BMPs.
+1. `mkdir pkg/templates/<name>`
+2. Implement:
+   - `type Card struct { ... }` with fields for your data
+   - `func (c *Card) Render() image.Image` — use `gg.NewContext(W, H)`, call `layout.DrawReversedHeader`, draw content
+   - `func Spec() card.Spec` — return `Name`, `Usage`, and a `Factory` that registers flags and returns the card
+3. Add `pkg/templates/<name>` import and `name.Spec()` to `cmd/deck/main.go` registry slice
+4. Add `mage <Name>` target in `magefile.go` (optional but preferred)
+5. Add test in `pkg/templates/<name>/<name>_test.go` using `card.AssertDimensions(t, c, 800, 480)`
 
-### 2.2 What CrossPoint Deck Is Not
+## Testing
 
-- **Not a firmware patch.** No C++, no PlatformIO, no `lib/`, `src/`, or `freeink-sdk/` changes.
-- **Not a mobile app.** No React Native, no Expo, no iOS signing, no app store submission.
-- **Not a new protocol.** No custom UDP ports, no new WebSocket message types, no REST endpoints.
-- **Not an EPUB generator.** Cards are bitmaps, not reflowable documents. Do not introduce EPUB, HTML-in-ZIP, or CSS layout engines for card content.
+- Run: `go test ./...` or `mage test`
+- Each template should have a `_test.go` with at least:
+  - `card.AssertDimensions(t, c, 800, 480)` for landscape
+  - `card.AssertDimensions(t, c, 480, 800)` for portrait if supported
+  - A test that `Spec().New(flag.NewFlagSet(...))` returns non-nil
+- `go vet ./...` is part of `mage verify`
 
-### 2.3 Layer Diagram
+## Output Verification
 
-```
-┌─────────────────────────────────────────┐
-│         CrossPoint Deck (this repo)      │
-│  Templates → Render → 800×480 BMP files  │
-│  Collection metadata (JSON/YAML indexes)   │
-└─────────────────────────────────────────┘
-                    │
-                    ▼ (push via sync API or SD copy)
-┌─────────────────────────────────────────┐
-│      CrossPoint Sync (upstream iOS app) │
-│  Discovery / Upload Queue / WebSocket   │
-└─────────────────────────────────────────┘
-                    │
-                    ▼ (WebSocket / HTTP / SD card)
-┌─────────────────────────────────────────┐
-│      CrossPoint Reader (upstream firmware)│
-│  SD card → File Browser → BMP Viewer     │
-│  800×480 e-ink display                  │
-└─────────────────────────────────────────┘
-```
+- Generated BMPs must be **uncompressed 24-bit**.
+  - Verify: `file foo.bmp` should report `PC bitmap, Windows 3.x format, 800 x 480 x 24` (or 480×800).
+- `./output/` and `./packs/*.zip` are **gitignored**. Never commit generated assets.
+- Commit templates, source, and manifest JSON. Treat BMPs as build artifacts.
 
-**Rule:** Deck code must never import from `crosspoint-sync` source paths or `crosspoint-reader` firmware headers. It may document the API contract, but it does not embed it.
+## Upstream Constraints (Hard Boundaries)
 
-## 3. Code Generation Guidelines
+- **Target device:** XTEink X4, ESP32-C3, ~380 KB RAM, no PSRAM.
+- **Only `.bmp` is viewable** via the firmware's `BmpViewerActivity`. No PNG/JPG support.
+- **File browser navigation:** Placing multiple `.bmp` files in the same SD card folder gives prev/next button navigation. Design folder structures as "decks."
+- **Do NOT** write firmware code (C++, PlatformIO), mobile app code (React Native), or new network protocols. This repo is strictly a **content generator** that produces static files.
 
-### 3.1 Asset Pipeline: Vector SVG → Monochrome BMP
+## Common Mistakes to Avoid
 
-The recommended pipeline for card generation:
-
-1. **Design in SVG** (or programmatic SVG generation).
-   - Use precise coordinates; text should be converted to paths or use known font metrics.
-   - The X4 dithers 24-bit input to 4 grayscale levels; anti-aliased edges render smoothly. Design in B&W but don't strip anti-aliasing.
-2. **Rasterize to exact resolution.**
-   - Target: 800 × 480 px.
-   - If the design is landscape-first, render at 480 × 800 and accept that the viewer will display it in the current orientation without rotation.
-3. **Export as uncompressed 24-bit BMP.**
-   - The firmware parser expects standard BMP headers with 24-bit RGB and no compression.
-   - Tools: ImageMagick (`convert -depth 24 -compress none`), Pillow (Python), or sharp (Node.js).
-
-### 3.2 Why Not PNG/JPG?
-
-- The firmware does **not** have a PNG or JPEG decoder in the BMP viewer path.
-- EPUB-embedded JPG/PNG are decoded by the EPUB engine, which is heavyweight and unnecessary for a single static card.
-- BMP is parsed as a stream: headers → row data. Minimal RAM, no decompression codec.
-
-### 3.3 Contrast and Legibility Requirements
-
-- **Minimum line thickness:** 2 px for black lines on white. 1 px lines can disappear in e-ink ghosting.
-- **Text size:** No smaller than 12 px height for body text; 14–16 px preferred. Calendar day numbers at 14px are readable on-device.
-- **QR codes:** Use a minimum quiet zone of 4 modules. Test at actual display size; high-density QR codes may fail to scan if dithered.
-- **Dithering:** The X4's SSD1677 controller handles dithering in hardware. Do not apply software dithering (Floyd-Steinberg, ordered) before encoding — let the device's native pipeline handle it. The BMP encoder writes actual 24-bit pixel values without thresholding.
-
-### 3.4 Folder Naming Conventions
-
-Cards are organized on the SD card under a root collection folder. Suggested structure:
-
-```
-/Cards/
-  Business/
-    contact-qrcode.bmp
-    meeting-schedule.bmp
-  Calendar/
-    2026-year-at-a-glance.bmp
-    Q3-planning.bmp
-  Reference/
-    keyboard-shortcuts.bmp
-    spanish-phrases.bmp
-```
-
-- Root folder: `/Cards/` (or user-configurable, but default to this).
-- Collection subfolders: PascalCase, no spaces if possible (firmware file browser handles spaces, but URLs and terminal commands are simpler without them).
-- Filenames: kebab-case, descriptive, `.bmp` extension only.
-- Do not use hidden folders (starting with `.`) unless the user explicitly wants them hidden from the browser.
-
-### 3.5 Metadata Sidecars (Optional)
-
-If a card needs a title, description, or update timestamp that the firmware cannot display (the BMP viewer has no overlay text), store a sidecar JSON file next to the BMP:
-
-```
-/Cards/Business/contact-qrcode.bmp
-/Cards/Business/contact-qrcode.json
-```
-
-The sidecar is for the **host-side** generator or a future mobile UI; the firmware ignores it. Keep sidecars small (< 1 KB).
-
-## 4. Testing and Verification Rules
-
-- **Never claim a card "should work" without inspecting the BMP header.**
-  - Verify: `file mycard.bmp` should report `PC bitmap, Windows 3.x format, 800 x 480 x 24`.
-  - Verify: ImageMagick `identify -verbose mycard.bmp | grep "Print size"` or pixel dimensions.
-- **Never generate BMPs with compression.** The firmware parser does not handle RLE or Huffman-compressed BMPs.
-- **Test contrast empirically:** If you cannot threshold the design to pure black/white without losing meaning, redesign it. Do not rely on grayscale as a crutch.
-- **Respect upstream scope:** CrossPoint Reader's `SCOPE.md` rejects interactive apps, active connectivity, and complex annotation. Deck must not propose features that violate this scope (e.g., animated cards, live data, touch interaction).
-
-## 5. Commit and Code Style Conventions
-
-- Follow the host language's standard tooling (Prettier, Black, gofmt, etc.) once a language is chosen.
-- Do not commit generated `.bmp` files to git. Use `.gitignore` for `/output/` or `/dist/` directories.
-- Commit templates and source files (SVG, JSON, scripts). Treat rendered BMPs as build artifacts.
-- If committing metadata about the upstream API, cite the source file path in the upstream repo (e.g., `crosspoint-reader/src/activities/util/BmpViewerActivity.cpp`) so future agents can verify.
-
-## 6. Summary Checklist for Every Change
-
-Before generating or modifying card assets, confirm:
-
-- [ ] Output format is uncompressed 24-bit BMP.
-- [ ] Resolution matches 800 × 480 (X4 portrait) or 480 × 800 (X4 landscape, if accepting no auto-rotation).
-- [ ] Design uses high-contrast B&W with anti-aliased edges preserved (no hard threshold in encoder).
-- [ ] Folder structure is under `/Cards/` or a user-defined root, not mixed with `/Books/` or `/Articles/`.
-- [ ] No firmware code, no mobile app code, no new network protocols were introduced.
-- [ ] File sizes are reasonable (~1 MB per card, not 10 MB).
-- [ ] Card renders without warnings (the `render: warning: non-black/white pixels` message was removed in favor of grayscale support).
+- **Thresholding grayscale:** The BMP encoder writes actual 24-bit pixel values. Let the X4's SSD1677 dither to 4 levels. Do not pre-threshold to black/white.
+- **Embedding photos:** Uncompressed 800×480 BMP is ~1.15 MB. Photo cards bloat quickly; prefer vector/text designs.
+- **Forgetting the registry:** A template package without an entry in `main.go` is unreachable from the CLI.
+- **Custom `--font` without fallback:** If you change font loading logic, ensure the fallback chain still works or CI will break.
+- **Software dithering:** Do not apply Floyd-Steinberg or ordered dithering. The hardware does it better.
