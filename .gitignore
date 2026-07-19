@@ -10,6 +10,9 @@
 /deck
 /crosspoint-deck
 
+# OpenCode internal state
+.omo/
+
 # Test binary
 *.test
 
