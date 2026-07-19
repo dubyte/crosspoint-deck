@@ -60,12 +60,27 @@ var registry = []card.Spec{
 }
 
 func main() {
-	if len(os.Args) < 2 {
+	display := render.DisplayPortrait
+	args := os.Args[1:]
+
+	// Parse global --display flag before the subcommand.
+	for i := 0; i < len(args); i++ {
+		if args[i] == "--display" && i+1 < len(args) {
+			v := args[i+1]
+			if v == render.DisplayPortrait || v == render.DisplayLandscape {
+				display = v
+			}
+			args = append(args[:i], args[i+2:]...)
+			break
+		}
+	}
+
+	if len(args) < 1 {
 		usage()
 		os.Exit(1)
 	}
 
-	cmd := os.Args[1]
+	cmd := args[0]
 	if cmd == "help" || cmd == "-h" || cmd == "--help" {
 		usage()
 		os.Exit(0)
@@ -73,7 +88,7 @@ func main() {
 
 	for _, spec := range registry {
 		if spec.Name == cmd {
-			runSpec(spec, os.Args[2:])
+			runSpec(spec, display, args[1:])
 			return
 		}
 	}
@@ -84,7 +99,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Print("Usage: deck <command> [flags]\n\nCommands:\n")
+	fmt.Print("Usage: deck [--display portrait|landscape] <command> [flags]\n\nCommands:\n")
 	for _, spec := range registry {
 		fmt.Printf("  %-12s %s\n", spec.Name, spec.Usage)
 	}
@@ -97,7 +112,7 @@ Examples:
 `)
 }
 
-func runSpec(spec card.Spec, args []string) {
+func runSpec(spec card.Spec, display string, args []string) {
 	fs := flag.NewFlagSet(spec.Name, flag.ExitOnError)
 	out := fs.String("output", spec.Name+".bmp", "Output BMP file path")
 
@@ -109,7 +124,7 @@ func runSpec(spec card.Spec, args []string) {
 		os.Exit(1)
 	}
 
-	if err := render.ToFile(c, *out); err != nil {
+	if err := render.ToFile(c, display, *out); err != nil {
 		fmt.Fprintf(os.Stderr, "error: render: %v\n", err)
 		os.Exit(1)
 	}
