@@ -220,3 +220,11 @@ pkg/
     ├── packing/
     └── wifi/
 ```
+
+## Quick Reference
+
+- **Design system:** Reversed black header bar + 2px divider + bold labels/regular values. Use `layout.DrawReversedHeader` and `layout.LoadFontFaceBold`.
+- **Adding a card:** Create `pkg/templates/<name>/<name>.go`, register in `cmd/deck/main.go`'s `registry`, add mage target in `magefile.go`.
+- **Phase 3 prompt:** `.ai/prompts/phase3-implementation.md` — detailed instructions for implementing 15 new card types.
+- **Roadmap:** `ROADMAP.md` — full card catalog and phase planning.
+- **Agent rules:** `agents.md` — hardware constraints, design principles, commit conventions.
