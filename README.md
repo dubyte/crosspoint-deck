@@ -96,7 +96,7 @@ That's it. Your e-reader is now a deck of useful reference cards.
 
 ## What Cards Can I Make?
 
-Run `./deck --help` to see all commands, or `mage -l` for build tasks.
+Run `./deck --help` to see all commands, or `mage -l` for build tasks. For a full gallery with generated images and copy-paste commands, see **[EXAMPLES.md](EXAMPLES.md)**.
 
 | Card | What it's for | Example use |
 |---|---|---|
@@ -154,7 +154,7 @@ This project is MIT-licensed. If you have an idea for a new card type, adding on
 2. Implement `Render()` and `Spec()`
 3. Add one line to the registry in `cmd/deck/main.go`
 
-See [agents.md](agents.md) for the full developer guide.
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for a step-by-step guide, or [agents.md](agents.md) for the full developer guide.
 
 ## License
 
