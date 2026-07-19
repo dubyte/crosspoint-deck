@@ -13,12 +13,12 @@ import (
 
 // Card renders an emergency information card.
 type Card struct {
-	Country     string
-	Contacts    []EmergencyContact
-	BloodType   string
-	Allergies   string
-	Portrait    bool
-	FontPath    string
+	Country   string
+	Contacts  []EmergencyContact
+	BloodType string
+	Allergies string
+	Portrait  bool
+	FontPath  string
 }
 
 // EmergencyContact holds a label and number.
@@ -40,36 +40,51 @@ func (e *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, e.FontPath, 22)
-
-	// Title
-	dc.SetColor(color.Black)
 	title := "Emergency Info"
 	if e.Country != "" {
-		title = "Emergency: " + e.Country
+		title = "Emergency · " + e.Country
 	}
-	dc.DrawStringAnchored(title, float64(W)/2, 35, 0.5, 0.5)
+	bodyY := layout.DrawReversedHeader(dc, title, W, 22, e.FontPath)
 
-	// Contacts
-	_ = layout.LoadFontFace(dc, e.FontPath, 18)
-	startY := 75
+	// Contacts with bold labels
+	startY := bodyY + 16
+	lineH := 32.0
+	_ = layout.LoadFontFaceBold(dc, e.FontPath, 18)
+
 	for i, contact := range e.Contacts {
-		y := float64(startY + i*35)
+		y := float64(startY) + float64(i)*lineH
 		if y > float64(H)-80 {
 			break
 		}
-		dc.DrawString(contact.Label+": "+contact.Number, 30, y)
+		_ = layout.LoadFontFaceBold(dc, e.FontPath, 18)
+		dc.SetColor(color.Black)
+		w, _ := dc.MeasureString(contact.Label)
+		dc.DrawString(contact.Label, float64(W)/2-w-8, y)
+
+		_ = layout.LoadFontFace(dc, e.FontPath, 18)
+		dc.DrawString(contact.Number, float64(W)/2+8, y)
 	}
 
 	// Medical info
 	if e.BloodType != "" || e.Allergies != "" {
 		medY := float64(H) - 60
 		_ = layout.LoadFontFace(dc, e.FontPath, 16)
+		dc.SetColor(color.Black)
 		if e.BloodType != "" {
-			dc.DrawString("Blood: "+e.BloodType, 30, medY)
+			_ = layout.LoadFontFaceBold(dc, e.FontPath, 16)
+			w, _ := dc.MeasureString("Blood")
+			dc.DrawString("Blood", float64(W)/2-w-4, medY)
+
+			_ = layout.LoadFontFace(dc, e.FontPath, 16)
+			dc.DrawString(e.BloodType, float64(W)/2+4, medY)
 		}
 		if e.Allergies != "" {
-			dc.DrawString("Allergies: "+e.Allergies, 30, medY+25)
+			_ = layout.LoadFontFaceBold(dc, e.FontPath, 16)
+			w, _ := dc.MeasureString("Allergies")
+			dc.DrawString("Allergies", float64(W)/2-w-4, medY+25)
+
+			_ = layout.LoadFontFace(dc, e.FontPath, 16)
+			dc.DrawString(e.Allergies, float64(W)/2+4, medY+25)
 		}
 	}
 

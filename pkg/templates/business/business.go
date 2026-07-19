@@ -36,29 +36,33 @@ func (b *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, b.FontPath, 24)
+	bodyY := layout.DrawReversedHeader(dc, b.Name, W, 22, b.FontPath)
 
-	// Name
+	// Title below name
+	_ = layout.LoadFontFace(dc, b.FontPath, 16)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(b.Name, float64(W)/2, 50, 0.5, 0.5)
+	dc.DrawStringAnchored(b.Title, float64(W)/2, bodyY+10, 0.5, 0.5)
 
-	// Title
-	_ = layout.LoadFontFace(dc, b.FontPath, 18)
-	dc.DrawStringAnchored(b.Title, float64(W)/2, 85, 0.5, 0.5)
-
-	// Contact info
+	// Contact info with bold labels
+	infoY := bodyY + 46
+	lineH := 28.0
+	_ = layout.LoadFontFaceBold(dc, b.FontPath, 14)
 	_ = layout.LoadFontFace(dc, b.FontPath, 14)
-	infoY := 130
-	if b.Phone != "" {
-		dc.DrawStringAnchored(b.Phone, float64(W)/2, float64(infoY), 0.5, 0.5)
-		infoY += 25
-	}
-	if b.Email != "" {
-		dc.DrawStringAnchored(b.Email, float64(W)/2, float64(infoY), 0.5, 0.5)
-		infoY += 25
-	}
-	if b.Website != "" {
-		dc.DrawStringAnchored(b.Website, float64(W)/2, float64(infoY), 0.5, 0.5)
+	for _, entry := range []struct{ label, value string }{
+		{"Phone", b.Phone},
+		{"Email", b.Email},
+		{"Web", b.Website},
+	} {
+		if entry.value == "" {
+			continue
+		}
+		_ = layout.LoadFontFaceBold(dc, b.FontPath, 14)
+		dc.SetColor(color.Black)
+		w, _ := dc.MeasureString(entry.label)
+		dc.DrawString(entry.label, float64(W)/2-w-6, infoY)
+		_ = layout.LoadFontFace(dc, b.FontPath, 14)
+		dc.DrawString(entry.value, float64(W)/2+6, infoY)
+		infoY += lineH
 	}
 
 	// QR vCard

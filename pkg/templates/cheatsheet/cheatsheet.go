@@ -13,10 +13,10 @@ import (
 
 // Card renders a keyboard shortcuts cheat sheet.
 type Card struct {
-	Title    string
+	Title     string
 	Shortcuts []Shortcut
-	Portrait bool
-	FontPath string
+	Portrait  bool
+	FontPath  string
 }
 
 // Shortcut pairs a key combination with a description.
@@ -38,28 +38,33 @@ func (c *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, c.FontPath, 20)
+	bodyY := layout.DrawReversedHeader(dc, c.Title, W, 22, c.FontPath)
 
-	// Title
-	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(c.Title, float64(W)/2, 35, 0.5, 0.5)
-
-	// Shortcuts list
+	// Shortcuts list with bold keys
 	_ = layout.LoadFontFace(dc, c.FontPath, 14)
-	startY := 70
+	startY := bodyY + 12
 	lineH := 28.0
 	colW := float64(W) / 2
 	for i, s := range c.Shortcuts {
 		y := float64(startY) + float64(i)*lineH
-		if y > float64(H)-30 {
-			break // don't overflow
+		if y > float64(H)-20 {
+			break
 		}
 		x := 20.0
-		if i >= len(c.Shortcuts)/2 && !c.Portrait {
+		col := i
+		if !c.Portrait && i >= (len(c.Shortcuts)+1)/2 {
 			x = colW + 20
-			y = float64(startY) + float64(i-len(c.Shortcuts)/2)*lineH
+			col = i - (len(c.Shortcuts)+1)/2
+			y = float64(startY) + float64(col)*lineH
 		}
-		dc.DrawString(s.Keys+" : "+s.Description, x, y)
+
+		_ = layout.LoadFontFaceBold(dc, c.FontPath, 14)
+		dc.SetColor(color.Black)
+		w, _ := dc.MeasureString(s.Keys)
+		dc.DrawString(s.Keys, x, y)
+
+		_ = layout.LoadFontFace(dc, c.FontPath, 14)
+		dc.DrawString(": "+s.Description, x+w, y)
 	}
 
 	return dc.Image()

@@ -31,20 +31,17 @@ func (m *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, m.FontPath, 24)
-
-	// Room title
-	dc.SetColor(color.Black)
-	dc.DrawStringAnchored("Room: "+m.Room, float64(W)/2, 40, 0.5, 0.5)
+	bodyY := layout.DrawReversedHeader(dc, m.Room, W, 24, m.FontPath)
 
 	// Events list
 	_ = layout.LoadFontFace(dc, m.FontPath, 18)
-	startY := 80
+	startY := bodyY + 16
 	for i, event := range m.Events {
-		y := float64(startY + i*35)
+		y := startY + float64(i)*35
 		if y > float64(H)-30 {
 			break
 		}
+		dc.SetColor(color.Black)
 		dc.DrawStringAnchored(event, float64(W)/2, y, 0.5, 0.5)
 	}
 

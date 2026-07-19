@@ -28,12 +28,6 @@ func ToFile(c card.Card, path string) error {
 			PortraitW, PortraitH, LandscapeW, LandscapeH, w, h)
 	}
 
-	if !bmp.IsBlackWhite(img) {
-		// We still proceed because the encoder will threshold, but warn.
-		// In a future version this could be a strict error.
-		fmt.Fprintf(os.Stderr, "render: warning: design contains non-black/white pixels; they will be thresholded\n")
-	}
-
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("render: create file: %w", err)

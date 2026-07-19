@@ -32,26 +32,23 @@ func (p *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, p.FontPath, 22)
-
-	// Title
-	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(p.Title, float64(W)/2, 35, 0.5, 0.5)
+	bodyY := layout.DrawReversedHeader(dc, p.Title, W, 22, p.FontPath)
 
 	// Items list
 	_ = layout.LoadFontFace(dc, p.FontPath, 16)
 	colW := float64(W) / 2
-	startY := 70
+	startY := bodyY + 8
 	for i, item := range p.Items {
-		y := float64(startY + (i%12)*30)
+		y := startY + float64((i%12)*30)
 		x := 30.0
 		if i >= 12 && !p.Portrait {
 			x = colW + 30
-			y = float64(startY + (i-12)*30)
+			y = startY + float64((i-12)*30)
 		}
-		if y > float64(H)-30 {
+		if y > float64(H)-20 {
 			break
 		}
+		dc.SetColor(color.Black)
 		dc.DrawString("[ ] "+item, x, y)
 	}
 

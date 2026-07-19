@@ -34,11 +34,7 @@ func (h *Card) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, h.FontPath, 20)
-
-	// Title
-	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(h.Title, float64(W)/2, 30, 0.5, 0.5)
+	bodyY := layout.DrawReversedHeader(dc, h.Title, W, 22, h.FontPath)
 
 	if len(h.Habits) == 0 {
 		return dc.Image()
@@ -56,7 +52,7 @@ func (h *Card) Render() image.Image {
 	cols := days
 	rows := len(h.Habits)
 	marginX := 80.0
-	marginY := 60.0
+	marginY := bodyY + 20
 	cellW := (float64(W) - marginX - 20) / float64(cols)
 	cellH := (float64(H) - marginY - 20) / float64(rows)
 
@@ -65,21 +61,23 @@ func (h *Card) Render() image.Image {
 	// Day headers
 	for d := 0; d < days; d++ {
 		x := marginX + float64(d)*cellW + cellW/2
+		dc.SetColor(color.Black)
 		dc.DrawStringAnchored(fmtDay(d+1), x, marginY-10, 0.5, 0.5)
 	}
 
 	// Habit rows
+	_ = layout.LoadFontFaceBold(dc, h.FontPath, 12)
 	for r, habit := range h.Habits {
 		y := marginY + float64(r)*cellH + cellH/2
+		dc.SetColor(color.Black)
 		dc.DrawStringAnchored(habit, marginX-10, y, 1.0, 0.5)
 
 		for d := 0; d < days; d++ {
 			x := marginX + float64(d)*cellW + cellW/2
-			// Draw empty box
 			boxSize := min(cellW, cellH) * 0.6
 			dc.DrawRectangle(x-boxSize/2, y-boxSize/2, boxSize, boxSize)
 			dc.SetColor(color.Black)
-			dc.SetLineWidth(1)
+			dc.SetLineWidth(1.5)
 			dc.Stroke()
 		}
 	}

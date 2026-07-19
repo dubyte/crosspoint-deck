@@ -9,8 +9,7 @@ import (
 )
 
 // Encode writes img to w as an uncompressed 24-bit Windows BMP.
-// The image must be in RGBA or any format; gray pixels are thresholded
-// to pure black/white to match e-ink constraints.
+// Preserves grayscale levels for the XTEink X4's 4-level grayscale display.
 func Encode(w io.Writer, img image.Image) error {
 	bounds := img.Bounds()
 	width := bounds.Dx()
@@ -50,17 +49,11 @@ func Encode(w io.Writer, img image.Image) error {
 	for y := height - 1; y >= 0; y-- {
 		for x := 0; x < width; x++ {
 			r, g, b, _ := img.At(bounds.Min.X+x, bounds.Min.Y+y).RGBA()
-			// Threshold to pure black/white for e-ink legibility
-			lum := int(r>>8)*299 + int(g>>8)*587 + int(b>>8)*114
-			if lum < 128*1000 {
-				row[x*3+0] = 0x00 // B
-				row[x*3+1] = 0x00 // G
-				row[x*3+2] = 0x00 // R
-			} else {
-				row[x*3+0] = 0xFF
-				row[x*3+1] = 0xFF
-				row[x*3+2] = 0xFF
-			}
+			// Preserve actual pixel values for the X4's 4-level grayscale display.
+			// The SSD1677 controller dithers 24-bit input to 2-bit (4 levels) natively.
+			row[x*3+0] = byte(b >> 8)
+			row[x*3+1] = byte(g >> 8)
+			row[x*3+2] = byte(r >> 8)
 		}
 		if _, err := w.Write(row); err != nil {
 			return fmt.Errorf("bmp: write row %d: %w", y, err)

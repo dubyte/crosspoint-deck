@@ -37,19 +37,28 @@ func (y *YearCard) Render() image.Image {
 
 	dc := gg.NewContext(W, H)
 
-	// White background
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, y.FontPath, 14)
-
-	// Title: year
+	// Reversed header with year
+	_ = layout.LoadFontFaceBold(dc, y.FontPath, 26)
+	headerH := 42.0
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored(fmt.Sprintf("%d", y.Year), float64(W)/2, 24, 0.5, 0.5)
+	dc.DrawRectangle(0, 0, float64(W), headerH)
+	dc.Fill()
+	dc.SetColor(color.White)
+	dc.DrawStringAnchored(fmt.Sprintf("%d", y.Year), float64(W)/2, headerH/2, 0.5, 0.35)
 
-	gap := 20.0
+	// 2px divider
+	dc.SetColor(color.Black)
+	dc.SetLineWidth(2)
+	dc.DrawLine(20, headerH+8, float64(W)-20, headerH+8)
+	dc.Stroke()
+
+	gap := 16.0
+	topY := headerH + 18
 	cellW := (float64(W) - gap*float64(cols-1)) / float64(cols)
-	cellH := (float64(H) - 48 - gap*float64(rows-1)) / float64(rows)
+	cellH := (float64(H) - topY - gap*float64(rows-1)) / float64(rows)
 
 	startMonth := time.Date(y.Year, time.January, 1, 0, 0, 0, 0, time.UTC)
 
@@ -57,24 +66,26 @@ func (y *YearCard) Render() image.Image {
 		col := m % cols
 		row := m / cols
 		x0 := float64(col) * (cellW + gap)
-		y0 := 48 + float64(row)*(cellH+gap)
+		y0 := topY + float64(row)*(cellH+gap)
 
 		monthDate := startMonth.AddDate(0, m, 0)
-		drawMonth(dc, monthDate, x0, y0, cellW, cellH)
+		drawMonth(dc, monthDate, x0, y0, cellW, cellH, y.FontPath)
 	}
 
 	return dc.Image()
 }
 
-func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64) {
-	// Month name
+func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath string) {
+	// Month name in bold
+	_ = layout.LoadFontFaceBold(dc, fontPath, 15)
 	dc.SetColor(color.Black)
 	monthName := t.Format("Jan")
-	dc.DrawStringAnchored(monthName, x0+cw/2, y0+14, 0.5, 0.5)
+	dc.DrawStringAnchored(monthName, x0+cw/2, y0+13, 0.5, 0.5)
 
 	// Day headers: S M T W T F S
+	_ = layout.LoadFontFace(dc, fontPath, 12)
 	days := []string{"S", "M", "T", "W", "T", "F", "S"}
-	headerY := y0 + 30
+	headerY := y0 + 28
 	cellW := cw / 7
 	for i, d := range days {
 		dc.DrawStringAnchored(d, x0+cellW*float64(i)+cellW/2, headerY, 0.5, 0.5)
@@ -85,9 +96,10 @@ func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64) {
 	lastDay := firstDay.AddDate(0, 1, -1)
 	startWeekday := int(firstDay.Weekday()) // 0=Sunday
 
-	dayY := headerY + 18
-	dayH := (ch - 48) / 6 // up to 6 weeks
+	dayY := headerY + 16
+	dayH := (ch - 44) / 6
 
+	_ = layout.LoadFontFace(dc, fontPath, 14)
 	day := 1
 	for week := 0; week < 6; week++ {
 		for wd := 0; wd < 7; wd++ {

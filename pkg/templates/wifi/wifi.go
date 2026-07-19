@@ -33,18 +33,24 @@ func (w *WiFiCard) Render() image.Image {
 	dc.SetColor(color.White)
 	dc.Clear()
 
-	_ = layout.LoadFontFace(dc, w.FontPath, 20)
+	bodyY := layout.DrawReversedHeader(dc, "WiFi Access", W, 22, w.FontPath)
 
-	// Title
+	// Network info with bold labels
+	infoY := bodyY + 16
+
+	_ = layout.LoadFontFaceBold(dc, w.FontPath, 16)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored("WiFi Access", float64(W)/2, 40, 0.5, 0.5)
+	dc.DrawStringAnchored("Network", float64(W)/2, infoY, 0.5, 0.5)
 
-	// Network info
-	_ = layout.LoadFontFace(dc, w.FontPath, 16)
-	dc.DrawStringAnchored("Network:", float64(W)/2, 80, 0.5, 0.5)
-	dc.DrawStringAnchored(w.SSID, float64(W)/2, 110, 0.5, 0.5)
-	dc.DrawStringAnchored("Password:", float64(W)/2, 150, 0.5, 0.5)
-	dc.DrawStringAnchored(w.Password, float64(W)/2, 180, 0.5, 0.5)
+	_ = layout.LoadFontFace(dc, w.FontPath, 22)
+	dc.DrawStringAnchored(w.SSID, float64(W)/2, infoY+28, 0.5, 0.5)
+
+	infoY += 72
+	_ = layout.LoadFontFaceBold(dc, w.FontPath, 16)
+	dc.DrawStringAnchored("Password", float64(W)/2, infoY, 0.5, 0.5)
+
+	_ = layout.LoadFontFace(dc, w.FontPath, 22)
+	dc.DrawStringAnchored(w.Password, float64(W)/2, infoY+28, 0.5, 0.5)
 
 	// QR code
 	qrSize := 240
@@ -54,7 +60,7 @@ func (w *WiFiCard) Render() image.Image {
 	qrImg, err := qr.GenerateWiFi(w.SSID, w.Password, w.Encryption, qrSize)
 	if err == nil {
 		x := (W - qrSize) / 2
-		y := H - qrSize - 40
+		y := H - qrSize - 20
 		dc.DrawImage(qrImg, x, y)
 	}
 
