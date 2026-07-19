@@ -2,10 +2,10 @@ package render
 
 import (
 	"fmt"
-	"image"
 	"os"
 
 	"github.com/dubyte/crosspoint-deck/pkg/bmp"
+	"github.com/dubyte/crosspoint-deck/pkg/card"
 )
 
 // Target dimensions for the XTEink X4 display.
@@ -18,7 +18,7 @@ const (
 
 // ToFile renders a card and writes an uncompressed 24-bit BMP to path.
 // It validates exact dimensions and warns if the design contains gray pixels.
-func ToFile(c interface{ Render() image.Image }, path string) error {
+func ToFile(c card.Card, path string) error {
 	img := c.Render()
 
 	bounds := img.Bounds()
