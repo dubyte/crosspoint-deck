@@ -1,173 +1,165 @@
 # CrossPoint Deck
 
-Turn your XTEink X4 e-reader into a glanceable, high-utility information hub.
+Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes.
 
-CrossPoint Deck is a content-generation layer for the [CrossPoint Reader](https://github.com/crosspoint-reader/crosspoint-reader) ecosystem. Instead of long-form books, it produces **cards** — single-page, self-contained utilities such as business cards, year-at-a-glance calendars, QR code sheets, and cheat sheets — formatted for the device's 800×480 e-ink display and synced via the existing [CrossPoint Sync](https://github.com/zabirauf/crosspoint-sync) pipeline.
+<p align="center">
+  <img src="docs/images/example-owner.png" width="400" alt="Owner identification card example">
+</p>
 
-## The Idea
+## What is this?
 
-E-ink excels at static, high-contrast information that you reference in seconds, not minutes. CrossPoint Deck treats the reader as a **deck of cards**: each card is an independent, instantly readable single-page asset. You browse folders on the device, tap a `.bmp` file, and the native image viewer displays it full-screen with no rendering overhead, no page turns, and no loading delay.
+Your XTEink X4 is great for reading books. But it also excels at showing **static, high-contrast information** — things you glance at quickly: a calendar, a WiFi password with a QR code, a packing checklist, or a "this belongs to" card.
 
-## What It Does
+**CrossPoint Deck** generates these cards as `.bmp` images, perfectly sized for the X4's 800×480 display. You put them in a folder on your SD card, browse to it on the device, and flip through them like a deck of cards.
 
-- **Generates cards** — Go packages that render `.bmp` images with anti-aliased edges for the X4's 4-level grayscale display (SSD1677 controller).
-- **Organizes collections** — cards are grouped into folders (e.g., `/Cards/Work/`, `/Cards/Travel/`) that the firmware's existing file browser navigates natively.
-- **Syncs upstream** — cards are pushed to the device through the same WebSocket/HTTP upload pipeline that `crosspoint-sync` uses for EPUBs. No custom protocol, no firmware patch.
+No firmware modifications. No mobile app. No complicated sync setup. Just generate, copy, and go.
 
-## What It Does *Not* Do
+## What It Looks Like
 
-- **It is not a firmware fork.** CrossPoint Deck does not modify the CrossPoint Reader firmware, add new activities, or consume RAM on the ESP32-C3.
-- **It is not a sync client.** It does not reimplement discovery, WebSocket chunking, or queue management; it delegates all transport to `crosspoint-sync` or manual SD-card copy.
-- **It does not render PDFs or EPUBs.** Cards are flat bitmaps. The firmware's existing BMP viewer is the rendering engine.
+Here are a few examples of what you can create:
 
-## Target Hardware
+### Owner Card
+<p align="center">
+  <img src="docs/images/example-owner.png" width="400" alt="Owner card showing name and contact info">
+</p>
 
-- **Device:** XTEink X4 (ESP32-C3, 800×480 monochrome e-ink, ~380 KB usable RAM)
-- **Display:** 4-level grayscale via SSD1677 controller (white, light gray, dark gray, black). BMP encoder preserves anti-aliased edges; device dithers natively.
-- **Storage:** SD card. Cards live as ordinary files in ordinary folders.
-- **Navigation:** Firmware file browser + native BMP viewer (prev/next through sibling `.bmp` files in the same folder).
+*"If found, please contact owner" — great for a device you carry around.*
 
-## How a Card Reaches the Device
+### WiFi Access Card
+<p align="center">
+  <img src="docs/images/example-wifi.png" width="400" alt="WiFi card with QR code">
+</p>
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  Card Template  │ ──► │  Render Script   │ ──► │   800×480 BMP   │
-│  (Go code)      │     │  (fogleman/gg)   │     │  (24-bit uncomp)│
-└─────────────────┘     └──────────────────┘     └─────────────────┘
-                                                        │
-┌─────────────────┐     ┌──────────────────┐            │
-│  XTEink X4      │ ◄── │ crosspoint-sync  │ ◄─────────┘
-│  (BMP viewer)   │     │  (upload queue)  │   WebSocket/HTTP
-└─────────────────┘     └──────────────────┘
-```
+*Guests scan the QR code instead of asking for the password. Works beautifully on e-ink.*
 
-1. A template renders a card to an **uncompressed 24-bit BMP** at exactly 800×480 pixels (or 480×800 portrait). Anti-aliased edges and subtle shading are preserved for the X4's grayscale display.
-2. The BMP is placed in a collection folder (e.g., `/Cards/Business/`).
-3. `crosspoint-sync` (or a manual copy) pushes the folder to the SD card.
-4. On the device, you browse to the folder and select the `.bmp`. The native viewer opens it full-screen.
+### Year-at-a-Glance Calendar
+<p align="center">
+  <img src="docs/images/example-calendar.png" width="400" alt="2026 calendar card">
+</p>
 
-## Card Types (Examples)
+*Replaces a wall calendar. Always visible, never needs charging.*
 
-| Collection | Example Cards |
-|---|---|
-| **Business** | Contact card with QR vCard, meeting-room schedules, one-page pitch sheets |
-| **Calendar** | Year-at-a-glance, quarterly planning grids, holiday lists |
-| **Reference** | Keyboard shortcuts, language cheat sheets, unit-conversion tables |
-| **Travel** | Packing checklists, itinerary summaries, translation cards |
-| **Health** | Medication schedules, gym routines, measurement logs |
+## Quick Start: From Zero to Card
 
-Each card is a single `.bmp` file. A folder of `.bmp` files becomes a swipeable deck thanks to the firmware's built-in sibling-image navigation.
+### 1. Install
 
-## Relationship to the Ecosystem
-
-| Project | Role |
-|---|---|
-| **crosspoint-reader** | The firmware. Provides the BMP viewer, file browser, and sleep-screen BMP support that Deck relies on. |
-| **crosspoint-sync** | The companion app. Provides the upload queue, device discovery, and folder management that gets Deck assets onto the device. |
-| **crosspoint-deck** | **This repo.** Generates the card assets and defines collection structures. It sits *above* the sync layer and feeds it standard files. |
-
-## Quick Start
-
-CrossPoint Deck uses [Mage](https://magefile.org/) as its task runner. Tasks are defined in `magefile.go` as Go functions, providing cross-platform shell completion and discoverability.
+You need [Go](https://go.dev/dl/) installed (1.22 or newer).
 
 ```bash
-# List available tasks
-$ mage -l
-
-# Run the default task (build)
-$ mage
-
-# Generate calendars
-$ mage calendar          # landscape 800×480
-$ mage calendarPortrait  # portrait 480×800
-$ mage all               # both orientations
-
-# Verify output format and run linting
-$ mage verify
-
-# Clean build artifacts
-$ mage clean
+git clone https://github.com/dubyte/crosspoint-deck.git
+cd crosspoint-deck
+go build ./cmd/deck
 ```
 
-You can also use the compiled CLI directly:
+This creates a `deck` command in the current folder.
+
+### 2. Generate a Card
 
 ```bash
-# Build
-$ go build ./cmd/deck
+# Owner card
+./deck owner --name "Your Name" --email "you@example.com" --output ./my-deck/owner.bmp
 
-# Generate a landscape calendar (default: 800×480)
-$ ./deck calendar --year 2026 --output ./output/calendar-2026.bmp
+# WiFi card with QR code
+./deck wifi --ssid "YourNetwork" --password "secret123" --output ./my-deck/wifi.bmp
 
-# Generate a portrait calendar (480×800)
-$ ./deck calendar --year 2026 --portrait --output ./output/calendar-2026-portrait.bmp
+# 2026 calendar (landscape)
+./deck calendar --year 2026 --output ./my-deck/calendar-2026.bmp
 
-# Use a custom font
-$ ./deck calendar --year 2026 --font /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf --output ./output/calendar-2026.bmp
+# Portrait orientation works too
+./deck owner --name "Your Name" --email "you@example.com" --portrait --output ./my-deck/owner-portrait.bmp
 ```
 
-## Available Card Types
+Every card is an **uncompressed 24-bit BMP** at exactly 800×480 pixels (or 480×800 for portrait). The X4's display dithers these to 4 grayscale levels natively, so text looks crisp and anti-aliased edges stay smooth.
 
-Run `deck --help` to see all commands.
+### 3. Copy to Your SD Card
 
-| Command | Description |
-|---|---|
-| `calendar` | Year-at-a-glance calendar with month gaps (landscape/portrait) |
-| `wifi` | WiFi access card with QR code and bold labels |
-| `business` | Business card with QR vCard and reversed header |
-| `cheatsheet` | Keyboard shortcuts cheat sheet with bold key bindings |
-| `meeting` | Meeting room schedule with reversed room header |
-| `packing` | Packing checklist with checkbox items |
-| `emergency` | Emergency contact card with bold labels |
-| `habit` | Habit tracker grid with bold habit names |
-| `chore` | Chore chart checklist with checkbox items |
-| `coffee` | Coffee brew guide with ratios, temp, and steps |
-| `convert` | Common unit conversions reference |
-| `library` | Library card with card number and branch |
-| `loyalty` | Loyalty cards list with store numbers |
-| `maintenance` | Home maintenance log checklist |
-| `morse` | Morse code reference chart |
-| `nato` | NATO phonetic alphabet reference |
-| `owner` | Owner identification card (name, email, optional phone) |
-| `plant` | Plant care guide with water, light, humidity |
-| `recipe` | Recipe card with ingredients and steps |
-| `resistor` | Resistor color code reference |
-| `shopping` | Shopping list checklist |
-| `stretch` | Stretching routine guide |
-| `timezones` | World time zones reference |
-| `workout` | Bodyweight workout card with exercises and rounds |
-
-## Starter Packs
-
-CrossPoint Deck can bundle cards into `.deckpack.zip` files for easy distribution.
+Take the SD card out of your X4, plug it into your computer, and copy the folder:
 
 ```bash
-# Generate starter packs
-$ mage PackCalendar     # 2026 Calendar Pack
-$ mage PackDeveloper    # Developer Reference Pack
-$ mage PackTravel       # Travel Essentials Pack
-$ mage Packs            # All packs
+# Linux / macOS
+cp -r ./my-deck /media/your-sd-card/Deck/
+
+# Windows — drag and drop the folder to the SD card
 ```
 
-A `.deckpack.zip` contains:
+Or use the existing [CrossPoint Sync](https://github.com/zabirauf/crosspoint-sync) app to upload wirelessly.
 
-- `bmps/` — pre-rendered BMP files
-- `manifest.json` — pack metadata (name, author, tags)
-- `preview.png` — thumbnail for gallery display
+### 4. Browse on Your X4
 
-## Project Status
+1. Put the SD card back in the X4.
+2. From the main menu, choose **Browse Files**.
+3. Navigate to the `Deck/` folder.
+4. Tap any `.bmp` file — it opens full-screen in the built-in image viewer.
+5. Use the **Prev/Next buttons** (or volume buttons) to swipe through all cards in the folder.
 
-CrossPoint Deck is in active development. Current capabilities:
+That's it. Your e-reader is now a deck of useful reference cards.
 
-- Pure-Go BMP encoder (24-bit uncompressed, preserves grayscale)
-- Registry-based template system (add a template in 2 steps)
-- 24 card types across 8 categories with unified design system
-- Reversed black header bar + bold/regular typographic hierarchy on all cards
-- 4-level grayscale support for the X4's SSD1677 display controller
-- Pack generation and distribution format (`.deckpack.zip`)
-- Mage-based build automation
+## What Cards Can I Make?
 
-See [ROADMAP.md](./ROADMAP.md) for planned phases.
+Run `./deck --help` to see all commands, or `mage -l` for build tasks.
+
+| Card | What it's for | Example use |
+|---|---|---|
+| `owner` | "This belongs to" identification | Leave on your device in case you lose it |
+| `wifi` | WiFi password + QR code | Guests scan instead of asking |
+| `business` | Contact card with QR vCard | Share info instantly at meetups |
+| `calendar` | Year-at-a-glance | Wall calendar replacement |
+| `cheatsheet` | Keyboard shortcuts | Vim, Git, or any tool you use daily |
+| `emergency` | Emergency contacts | Always-accessible ICE info |
+| `habit` | Habit tracker grid | Track daily routines |
+| `packing` | Packing checklist | Reuse for every trip |
+| `recipe` | Recipe with ingredients & steps | Cooking without touching your phone |
+| `plant` | Plant care guide | Water/light schedule per plant |
+| `workout` | Bodyweight workout | Gym card replacement |
+| `coffee` | Brew guide with ratios | Pour-over or French press steps |
+| `nato` | Phonetic alphabet | Classic reference card |
+| `resistor` | Resistor color codes | Electronics bench staple |
+| `timezones` | World time zones | Quick reference for calls |
+| ...and 9 more | See `./deck --help` | |
+
+## Using Mage (Optional)
+
+If you have [Mage](https://magefile.org/) installed, there are pre-made tasks:
+
+```bash
+mage -l              # List all tasks
+mage calendar        # Generate 2026 calendar
+mage wifi            # Generate example WiFi card
+mage owner           # Generate example owner card
+mage all             # Generate every card type
+mage verify          # Run tests and check outputs
+mage clean           # Remove generated files
+```
+
+## Tips for Great Cards
+
+- **High contrast works best.** Black text on white, or white text on black bars. The X4's display is monochrome — if a design needs color to work, it won't survive e-ink.
+- **Portrait vs. landscape.** The default is landscape (800×480). Use `--portrait` for 480×800 if you prefer holding the device vertically. The viewer auto-rotates if needed.
+- **Folder = deck.** Put multiple `.bmp` files in one SD card folder and you can flip through them with Prev/Next. Create separate folders for different purposes: `/Deck/Work/`, `/Deck/Travel/`, `/Deck/Home/`.
+- **No need to overthink fonts.** The tool tries common system fonts automatically (DejaVu, Liberation, Noto, Helvetica, Arial). If you want a specific font, use `--font /path/to/font.ttf`.
+- **BMP only.** The X4 firmware only views `.bmp` files. PNG and JPG won't open in the image viewer.
+
+## Technical Details (For the Curious)
+
+- **Output format:** Uncompressed 24-bit BMP, 800×480 or 480×800 pixels
+- **Grayscale:** The X4's SSD1677 controller dithers 24-bit color to 4 levels (white, light gray, dark gray, black). We preserve anti-aliased edges in the file and let the hardware handle the rest.
+- **No compression:** Each card is ~1.15 MB. SD cards have plenty of space; the X4 has minimal RAM, so uncompressed BMPs stream directly from storage without decompression overhead.
+- **Built with:** Go + [fogleman/gg](https://github.com/fogleman/gg) for 2D rendering
+
+## Contributing
+
+This project is MIT-licensed. If you have an idea for a new card type, adding one takes about 30 minutes of Go code:
+
+1. Create a package in `pkg/templates/<name>/`
+2. Implement `Render()` and `Spec()`
+3. Add one line to the registry in `cmd/deck/main.go`
+
+See [agents.md](agents.md) for the full developer guide.
 
 ## License
 
-MIT — use, modify, distribute, and build on this freely. See [LICENSE](./LICENSE) for the full text.
+MIT — use, modify, distribute, and build on this freely. See [LICENSE](LICENSE) for the full text.
+
+---
+
+*CrossPoint Deck is an independent content generator for the CrossPoint Reader ecosystem. It is not affiliated with the firmware or sync app maintainers.*
