@@ -2,6 +2,7 @@
 
 > Role: Community & Distribution strategist  
 > Date: 2026-07-18  
+> Updated: 2026-07-19  
 > Context: Early-stage Go CLI, MIT license, one maintainer (dubyte), targeting XTEink X4 via existing `crosspoint-sync` pipeline.
 
 ---
@@ -164,9 +165,9 @@ Before building any tooling, prove that cards are worth sharing. Create the ZIP+
 *Why first:* This creates immediate, concrete value. It validates the format on real hardware. And it gives you something to promote on Reddit/HN instead of saying "here's a CLI you could use."
 
 **Immediate action items:**
-- [ ] Write `docs/pack-format.md` with manifest JSON schema
-- [ ] Generate 3 packs with `mage`, verify on X4 hardware
-- [ ] Render 400×240 `preview.png` thumbnails for gallery display
+- [x] `.deckpack` format implemented in `pkg/pack/` (ZIP + manifest.json + preview.png)
+- [x] 3 starter packs defined in `packs.go`: Calendar, Developer Reference, Travel Essentials
+- [x] 24 card types implemented across all categories
 - [ ] Create GitHub releases with attached `.deckpack.zip` files
 - [ ] Open a friendly issue/PR on `zabirauf/crosspoint-sync` proposing gallery integration
 

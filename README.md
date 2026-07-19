@@ -10,7 +10,7 @@ E-ink excels at static, high-contrast information that you reference in seconds,
 
 ## What It Does
 
-- **Generates cards** — Go templates that produce `.bmp` images with anti-aliased rendering for the X4's 4-level grayscale display (SSD1677 controller).
+- **Generates cards** — Go packages that render `.bmp` images with anti-aliased edges for the X4's 4-level grayscale display (SSD1677 controller).
 - **Organizes collections** — cards are grouped into folders (e.g., `/Cards/Work/`, `/Cards/Travel/`) that the firmware's existing file browser navigates natively.
 - **Syncs upstream** — cards are pushed to the device through the same WebSocket/HTTP upload pipeline that `crosspoint-sync` uses for EPUBs. No custom protocol, no firmware patch.
 
@@ -32,7 +32,7 @@ E-ink excels at static, high-contrast information that you reference in seconds,
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
 │  Card Template  │ ──► │  Render Script   │ ──► │   800×480 BMP   │
-│  (SVG/HTML/...) │     │  (rasterizer)    │     │  (24-bit uncomp)│
+│  (Go code)      │     │  (fogleman/gg)   │     │  (24-bit uncomp)│
 └─────────────────┘     └──────────────────┘     └─────────────────┘
                                                         │
 ┌─────────────────┐     ┌──────────────────┐            │
@@ -119,6 +119,22 @@ Run `deck --help` to see all commands.
 | `packing` | Packing checklist with checkbox items |
 | `emergency` | Emergency contact card with bold labels |
 | `habit` | Habit tracker grid with bold habit names |
+| `chore` | Chore chart checklist with checkbox items |
+| `coffee` | Coffee brew guide with ratios, temp, and steps |
+| `convert` | Common unit conversions reference |
+| `library` | Library card with card number and branch |
+| `loyalty` | Loyalty cards list with store numbers |
+| `maintenance` | Home maintenance log checklist |
+| `morse` | Morse code reference chart |
+| `nato` | NATO phonetic alphabet reference |
+| `owner` | Owner identification card (name, email, optional phone) |
+| `plant` | Plant care guide with water, light, humidity |
+| `recipe` | Recipe card with ingredients and steps |
+| `resistor` | Resistor color code reference |
+| `shopping` | Shopping list checklist |
+| `stretch` | Stretching routine guide |
+| `timezones` | World time zones reference |
+| `workout` | Bodyweight workout card with exercises and rounds |
 
 ## Starter Packs
 
@@ -144,7 +160,7 @@ CrossPoint Deck is in active development. Current capabilities:
 
 - Pure-Go BMP encoder (24-bit uncompressed, preserves grayscale)
 - Registry-based template system (add a template in 2 steps)
-- 8 card types across 6 categories with unified design system
+- 24 card types across 8 categories with unified design system
 - Reversed black header bar + bold/regular typographic hierarchy on all cards
 - 4-level grayscale support for the X4's SSD1677 display controller
 - Pack generation and distribution format (`.deckpack.zip`)

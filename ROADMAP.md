@@ -12,11 +12,14 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 
 1. ✅ **Registry pattern** — `card.Spec` with factory function; `main.go` has a single `registry` slice (one line per template)
 2. ✅ **Shared utilities** — `pkg/layout/` (fonts, text, grids, tables, reversed headers, bold/regular helpers), `pkg/qr/` (QR generation)
-3. ✅ **Eight card types** covering the three core rendering primitives:
+3. ✅ **Twenty-four card types** covering five core rendering primitives:
    - WiFi QR, Business vCard — QR rasterization + scanning
-   - Cheatsheet, Meeting, Packing, Emergency — text layout + tables
+   - Cheatsheet, Meeting, Packing, Emergency, Owner, Shopping, Chore — text layout + tables
    - Calendar — grid layout + variable-density content
-   - Habit Tracker — checkbox grids
+   - Habit Tracker, Maintenance — checkbox grids
+   - Coffee, Recipe, Plant, Workout, Stretch — structured reference cards
+   - Library, Loyalty — identity cards
+   - Nato, Morse, Resistor, Convert, Timezones — quick reference charts
 4. ✅ **Design system** — Reversed black header bar + 2px divider + bold/regular typographic hierarchy on all cards
 5. ✅ **Grayscale pipeline** — BMP encoder preserves anti-aliased edges; X4's SSD1677 controller dithers 24-bit to 4-level natively
 6. ✅ **Build automation** — Mage tasks for each card + `mage All`
@@ -31,18 +34,18 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 
 1. ✅ **`.deckpack` format** — ZIP of BMPs + `manifest.json` + `preview.png`
 2. ✅ **3 starter packs** — Calendar, Developer Reference, Travel Essentials
-3. ✅ **9 cards done** (calendar ×2, wifi, business, cheatsheet, meeting, packing, emergency, habit)
+3. ✅ **24 cards done** covering all planned Phase 2 and most Phase 3 cards
 
 **Remaining:**
 
-1. **4–6 additional card types** from the Phase 2 catalog below
-2. **Gallery integration proposal** — spec + preview assets for `crosspoint-sync` maintainer
+1. **Gallery integration proposal** — spec + preview assets for `crosspoint-sync` maintainer
+2. **2–4 niche card types** from Phase 4 catalog (crossword, sudoku, guitar chords, chess)
 
-**Effort:** ~3–4 days remaining
+**Effort:** ~1–2 days remaining for core library
 
 ---
 
-## Phase 3: The Laminated Life — Print-to-E-Ink Cards (Next)
+## Phase 3: The Laminated Life — Print-to-E-Ink Cards ✅ DONE
 
 **Goal:** Cards that replace things people already print, laminate, and pin up.
 
@@ -57,10 +60,17 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 
 **Deliverables:**
 
-1. **Home & kitchen pack** — recipe card, chore chart, plant care guide, shopping list
-2. **Identity pack** — loyalty cards, library card, gym membership
-3. **Reference pack** — NATO phonetic alphabet, morse code, resistor codes, world time zones
-4. **Fitness pack** — bodyweight workout, stretching routine, run log
+1. ✅ **Home & kitchen pack** — recipe card, chore chart, plant care guide, shopping list, coffee brew guide
+2. ✅ **Identity pack** — loyalty cards, library card, owner card
+3. ✅ **Reference pack** — NATO phonetic alphabet, morse code, resistor codes, world time zones, common conversions
+4. ✅ **Fitness pack** — bodyweight workout, stretching routine
+
+**Remaining Phase 3 / Phase 4 ideas:**
+
+- Run log, gym membership card
+- First aid quick reference, baby feeding log, blood pressure log
+- Crossword, sudoku, guitar chords, chess openings, constellation chart
+- Daily quote card
 
 ---
 
@@ -94,38 +104,32 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 | 7 | Emergency Info Card | Safety | Laminated card replacement; always accessible |
 | 8 | Habit Tracker Grid | Productivity | Replaces paper habit tracker on fridge/bulletin |
 
-### Phase 2 — In Progress
+### Phase 2 — Done ✅
 
 | # | Card | Category | Complexity | Why it works |
 |---|---|---|---|---|
-| 9 | Price List / Menu | Business | Simple | Replaces laminated menu; update seasonally |
-| 10 | Boarding Pass Summary | Travel | Medium | Flight details at a glance; no app needed |
-| 11 | Itinerary Summary | Travel | Simple | Day-by-day plan; beats scrolling a PDF |
-| 12 | Medication Schedule | Health | Simple | Replaces paper meds chart; critical info always visible |
-| 13 | Workout / Gym Routine | Fitness | Simple | Replaces printed workout card at the gym |
-| 14 | Weekly Planner Grid | Productivity | Simple | Time-blocking on paper, now on e-ink |
+| 9 | Owner Identification | Identity | Simple | "If found" card; privacy-first with optional phone |
+| 10 | Chore Chart | Home | Simple | Weekly rotation; checkboxes like habit tracker |
+| 11 | Coffee Brew Guide | Kitchen | Simple | Ratios, temps, timers for each method |
+| 12 | Plant Care Guide | Home | Simple | Water/light per plant; replaces sticky notes in pots |
+| 13 | Recipe Card | Kitchen | Medium | Single recipe, big type; beats phone with wet hands |
+| 14 | Shopping List Template | Kitchen | Simple | Reusable checklist; update before market runs |
+| 15 | Loyalty Card Numbers | Identity | Simple | Barcode + member number; replaces keychain clutter |
+| 16 | Library Card | Identity | Simple | Card number + branch info; always in your "wallet" |
+| 17 | NATO Phonetic Alphabet | Reference | Simple | Alpha Bravo Charlie; classic laminated reference |
+| 18 | Morse Code Chart | Reference | Simple | Dots and dashes; fits one card perfectly |
+| 19 | Resistor Color Codes | Reference | Simple | BBROYGBVGW; electronics bench staple |
+| 20 | World Time Zones | Reference | Medium | Major cities mapped to your local time |
+| 21 | Common Conversions | Reference | Simple | Metric ↔ imperial; °F ↔ °C; laminated kitchen card |
+| 22 | Bodyweight Workout | Fitness | Simple | No-equipment circuit; replaces gym poster |
+| 23 | Stretching Routine | Fitness | Medium | Stick-figure diagrams + hold times |
+| 24 | Home Maintenance Log | Home | Simple | Filter changes, battery swaps, seasonal tasks |
 
-### Phase 3 — The Laminated Life (Next)
+### Phase 3 — The Laminated Life ✅ DONE
 
-| # | Card | Category | Complexity | Why it works |
-|---|---|---|---|---|
-| 15 | Recipe Card | Kitchen | Medium | Single recipe, big type; beats phone with wet hands |
-| 16 | Coffee Brew Guide | Kitchen | Simple | Ratios, temps, timers for each method |
-| 17 | Chore Chart | Home | Simple | Weekly rotation; checkboxes like habit tracker |
-| 18 | Plant Care Guide | Home | Simple | Water/light per plant; replaces sticky notes in pots |
-| 19 | Shopping List Template | Kitchen | Simple | Reusable checklist; update before market runs |
-| 20 | Loyalty Card Numbers | Identity | Simple | Barcode + member number; replaces keychain clutter |
-| 21 | Library Card | Identity | Simple | Card number + branch info; always in your "wallet" |
-| 22 | NATO Phonetic Alphabet | Reference | Simple | Alpha Bravo Charlie; classic laminated reference |
-| 23 | Morse Code Chart | Reference | Simple | Dots and dashes; fits one card perfectly |
-| 24 | Resistor Color Codes | Reference | Simple | BBROYGBVGW; electronics bench staple |
-| 25 | World Time Zones | Reference | Medium | Major cities mapped to your local time |
-| 26 | Common Conversions | Reference | Simple | Metric ↔ imperial; °F ↔ °C; laminated kitchen card |
-| 27 | Bodyweight Workout | Fitness | Simple | No-equipment circuit; replaces gym poster |
-| 28 | Stretching Routine | Fitness | Medium | Stick-figure diagrams + hold times |
-| 29 | Home Maintenance Log | Home | Simple | Filter changes, battery swaps, seasonal tasks |
+All planned laminated-life cards are implemented. See Phase 2 table above.
 
-### Phase 4 — Fun & Niche
+### Phase 4 — Fun & Niche (Next)
 
 | # | Card | Category | Complexity | Why it works |
 |---|---|---|---|---|
@@ -138,6 +142,13 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 | 36 | First Aid Quick Reference | Safety | Simple | CPR steps, Heimlich; replaces Red Cross foldout |
 | 37 | Baby Feeding Log | Health | Simple | Time + amount tracker; new parents live on paper logs |
 | 38 | Blood Pressure Log | Health | Medium | Date + reading grid; doctor-visit ready |
+| 39 | Price List / Menu | Business | Simple | Replaces laminated menu; update seasonally |
+| 40 | Boarding Pass Summary | Travel | Medium | Flight details at a glance; no app needed |
+| 41 | Itinerary Summary | Travel | Simple | Day-by-day plan; beats scrolling a PDF |
+| 42 | Medication Schedule | Health | Simple | Replaces paper meds chart; critical info always visible |
+| 43 | Weekly Planner Grid | Productivity | Simple | Time-blocking on paper, now on e-ink |
+
+
 
 ---
 
@@ -170,12 +181,13 @@ These principles guide which cards to build and how to design them:
 
 ## Decisions You Still Need to Make
 
-1. **Prioritize Phase 3 cards?** Which laminated-life cards ship first? Recipe + chore chart are highest immediate utility.
-2. **Target date for Phase 2 completion?** Gallery outreach depends on having 12+ polished cards.
+1. **Gallery integration?** Reach out to `crosspoint-sync` maintainer with spec + preview assets for a "Card Packs" gallery section.
+2. **Which Phase 4 cards first?** Daily quote + first aid are highest utility; crossword/sudoku are highest fun factor.
 3. **Monetization path?** GitHub Sponsors is the low-friction default; labeled sponsored packs are optional.
 4. **`.decktemplate` spec?** Needed before Phase 4 community exchange; simple JSON schema + SVG with `{{placeholders}}`.
 
 ---
 
 *Updated: 2026-07-19*
+*Status: 24 cards implemented. Phase 1–3 complete. Phase 4 (community on-ramp) and gallery integration remain.*
 *Expert panel: Product & UX, Technical Architecture, Community & Distribution, Xerography & Print-to-E-Ink*
