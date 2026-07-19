@@ -13,6 +13,7 @@ import (
 type Card struct {
 	Name     string
 	Email    string
+	Phone    string
 	Portrait bool
 	FontPath string
 }
@@ -41,15 +42,23 @@ func (o *Card) Render() image.Image {
 	dc.DrawStringAnchored(o.Name, float64(W)/2, bodyY+90, 0.5, 0.5)
 
 	// Email
+	contactY := bodyY + 140
 	if o.Email != "" {
 		_ = layout.LoadFontFace(dc, o.FontPath, 22)
-		dc.DrawStringAnchored(o.Email, float64(W)/2, bodyY+140, 0.5, 0.5)
+		dc.DrawStringAnchored(o.Email, float64(W)/2, contactY, 0.5, 0.5)
+		contactY += 40
+	}
+
+	// Phone (optional — omitted by default for privacy)
+	if o.Phone != "" {
+		_ = layout.LoadFontFace(dc, o.FontPath, 22)
+		dc.DrawStringAnchored(o.Phone, float64(W)/2, contactY, 0.5, 0.5)
 	}
 
 	// Optional: subtle "If found, please contact" at bottom
 	_ = layout.LoadFontFace(dc, o.FontPath, 14)
 	dc.SetColor(color.Black)
-	dc.DrawStringAnchored("If found, please contact owner at above email",
+	dc.DrawStringAnchored("If found, please contact owner",
 		float64(W)/2, float64(H)-30, 0.5, 0.5)
 
 	return dc.Image()
@@ -62,8 +71,9 @@ func Spec() card.Spec {
 		New: func(fs *flag.FlagSet) card.Card {
 			c := &Card{}
 			fs.StringVar(&c.Name, "name", "", "Owner name")
-			fs.StringVar(&c.Email, "email", "", "Owner email")
-			fs.BoolVar(&c.Portrait, "portrait", false, "Render in portrait orientation")
+		fs.StringVar(&c.Email, "email", "", "Owner email")
+		fs.StringVar(&c.Phone, "phone", "", "Owner phone (optional)")
+		fs.BoolVar(&c.Portrait, "portrait", false, "Render in portrait orientation")
 			fs.StringVar(&c.FontPath, "font", "", "Path to TTF font (optional)")
 			return c
 		},

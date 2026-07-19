@@ -11,6 +11,7 @@ func TestOwnerCard_Render(t *testing.T) {
 	c := &Card{
 		Name:  "Test User",
 		Email: "test@example.com",
+		Phone: "+1-555-0100",
 	}
 	card.AssertDimensions(t, c, 800, 480)
 }
