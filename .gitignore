@@ -1,5 +1,6 @@
 /output/
 /dist/
+/packs/*.zip
 *.bmp
 
 # Go build artifacts
