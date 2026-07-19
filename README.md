@@ -105,14 +105,49 @@ $ ./deck calendar --year 2026 --portrait --output ./output/calendar-2026-portrai
 $ ./deck calendar --year 2026 --font /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf --output ./output/calendar-2026.bmp
 ```
 
+## Available Card Types
+
+Run `deck --help` to see all commands.
+
+| Command | Description |
+|---|---|
+| `calendar` | Year-at-a-glance calendar (landscape/portrait) |
+| `wifi` | WiFi access card with QR code |
+| `business` | Business card with QR vCard |
+| `cheatsheet` | Keyboard shortcuts cheat sheet |
+| `meeting` | Meeting room schedule |
+| `packing` | Packing checklist |
+| `emergency` | Emergency contact card |
+| `habit` | Habit tracker grid |
+
+## Starter Packs
+
+CrossPoint Deck can bundle cards into `.deckpack.zip` files for easy distribution.
+
+```bash
+# Generate starter packs
+$ mage PackCalendar     # 2026 Calendar Pack
+$ mage PackDeveloper    # Developer Reference Pack
+$ mage PackTravel       # Travel Essentials Pack
+$ mage Packs            # All packs
+```
+
+A `.deckpack.zip` contains:
+- `bmps/` — pre-rendered BMP files
+- `manifest.json` — pack metadata (name, author, tags)
+- `preview.png` — thumbnail for gallery display
+
 ## Project Status
 
-CrossPoint Deck is in early conceptual development. The repo currently contains:
+CrossPoint Deck is in active development. Current capabilities:
 
-- Documentation and constraints for future AI agents and contributors.
-- Placeholder structure for card-generation scripts.
+- Pure-Go BMP encoder (24-bit uncompressed)
+- Registry-based template system (add a template in 2 steps)
+- 8 card types across 6 categories
+- Pack generation and distribution format
+- Mage-based build automation
 
-No implementation details are final. The goal is to establish scope, boundaries, and rendering constraints before writing generators.
+See [ROADMAP.md](./ROADMAP.md) for planned phases.
 
 ## License
 
