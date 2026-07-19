@@ -35,17 +35,18 @@ func (p *Card) Render() image.Image {
 	_ = layout.LoadFontFace(dc, p.FontPath, 20)
 	colW := float64(W) / 2
 	startY := bodyY + 12
-	lineH := 38.0
 	perCol := 10
+	lineH := 36.0
 	if p.Portrait {
 		perCol = 18
+		lineH = 42
 	}
 
 	for i, item := range p.Items {
 		y := startY + float64((i%perCol))*lineH
-		x := 40.0
+		x := 50.0
 		if i >= perCol && !p.Portrait {
-			x = colW + 40
+			x = colW + 50
 			y = startY + float64((i-perCol))*lineH
 		}
 		if y > float64(H)-20 {

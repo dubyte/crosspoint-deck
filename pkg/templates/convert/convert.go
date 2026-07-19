@@ -55,11 +55,11 @@ func (c *Card) Render() image.Image {
 
 	_ = layout.LoadFontFace(dc, c.FontPath, 18)
 	for i, conv := range conversions {
-		x := 30.0
+		x := 50.0
 		col := i
 		y := startY + float64(col)*lineH
 		if i >= half {
-			x = colW + 30
+			x = colW + 50
 			y = startY + float64(col-half)*lineH
 		}
 		dc.SetColor(color.Black)

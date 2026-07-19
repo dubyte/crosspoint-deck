@@ -45,10 +45,10 @@ func (c *Card) Render() image.Image {
 		if y > float64(H)-20 {
 			break
 		}
-		x := 30.0
+		x := 50.0
 		col := i
 		if !c.Portrait && i >= (len(c.Shortcuts)+1)/2 {
-			x = colW + 30
+			x = colW + 50
 			col = i - (len(c.Shortcuts)+1)/2
 			y = float64(startY) + float64(col)*lineH
 		}

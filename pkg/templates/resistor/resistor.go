@@ -41,11 +41,11 @@ func (c *Card) Render() image.Image {
 	lineH := 42.0
 
 	for i, b := range bands {
-		x := 60.0
+		x := 70.0
 		col := i
 		y := startY + float64(col)*lineH
 		if i >= half {
-			x = colW + 60
+			x = colW + 70
 			y = startY + float64(col-half)*lineH
 		}
 

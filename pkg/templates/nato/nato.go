@@ -41,15 +41,20 @@ func (c *Card) Render() image.Image {
 
 	half := 13
 	colW := float64(W) / 2
-	startY := bodyY + 12
+	// Tighter spacing in landscape (480px tall) to avoid overflow.
+	startY := bodyY + 8
 	lineH := 32.0
+	if !c.Portrait {
+		startY = bodyY + 4
+		lineH = 28
+	}
 
 	for i, entry := range alphabet {
-		x := 40.0
+		x := 50.0
 		col := i
 		y := startY + float64(col)*lineH
 		if i >= half {
-			x = colW + 40
+			x = colW + 50
 			y = startY + float64(col-half)*lineH
 		}
 

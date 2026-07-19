@@ -49,14 +49,14 @@ func (s *Card) Render() image.Image {
 		dc.SetColor(color.Black)
 		num := string(rune('1'+i)) + ". "
 		nw, _ := dc.MeasureString(num)
-		dc.DrawString(num, 30, y)
+		dc.DrawString(num, 50, y)
 
 		_ = layout.LoadFontFaceBold(dc, s.FontPath, 20)
-		dc.DrawString(st.Name, 30+nw, y)
+		dc.DrawString(st.Name, 50+nw, y)
 
 		_ = layout.LoadFontFace(dc, s.FontPath, 20)
 		ew, _ := dc.MeasureString(st.Name)
-		dc.DrawString(" · Hold: "+st.Duration, 30+nw+ew, y)
+		dc.DrawString(" · Hold: "+st.Duration, 50+nw+ew, y)
 	}
 
 	return dc.Image()

@@ -55,7 +55,7 @@ func (c *Card) Render() image.Image {
 	for i, entry := range codes {
 		col := i / perCol
 		row := i % perCol
-		x := float64(col)*colW + 30
+		x := float64(col)*colW + 50
 		y := startY + float64(row)*lineH
 		if y > float64(H)-20 {
 			break
