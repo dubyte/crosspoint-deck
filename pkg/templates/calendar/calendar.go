@@ -55,10 +55,14 @@ func (y *YearCard) Render() image.Image {
 	dc.DrawLine(20, headerH+10, float64(W)-20, headerH+10)
 	dc.Stroke()
 
-	gap := 16.0
+	gap := 10.0
 	topY := headerH + 22
+	bottomPad := 0.0
+	if y.Portrait {
+		bottomPad = 40 // firmware button labels at bottom
+	}
 	cellW := (float64(W) - gap*float64(cols-1)) / float64(cols)
-	cellH := (float64(H) - topY - gap*float64(rows-1)) / float64(rows)
+	cellH := (float64(H) - topY - bottomPad - gap*float64(rows-1)) / float64(rows)
 
 	startMonth := time.Date(y.Year, time.January, 1, 0, 0, 0, 0, time.UTC)
 
