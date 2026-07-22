@@ -51,7 +51,7 @@ func Business() error {
 func Cheatsheet() error {
 	mg.Deps(Build)
 	fmt.Println("Generating cheat sheet...")
-	return sh.Run("./deck", "cheatsheet", "--title", "Vim", "--shortcuts", "i:insert,Esc:normal,:w:save,:q:quit", "--output", "./output/cheatsheet.bmp")
+	return sh.Run("./deck", "cheatsheet", "--title", "Vim", "--shortcuts", "i:insert,a:append,I:insert at start,A:append at end,o:new line below,O:new line above,Esc:normal mode,:w:save,:q:quit,dd:delete line,yy:yank line,p:paste,u:undo,<C-r>:redo,gg:top of file,G:bottom of file,/:search,n:next match,^:start of line,$:end of line,v:visual mode", "--output", "./output/cheatsheet.bmp")
 }
 
 // Meeting generates a meeting room schedule card.

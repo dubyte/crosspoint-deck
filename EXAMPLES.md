@@ -75,7 +75,7 @@ Put the shortcuts you actually use on your desk. Vim, Git, Emacs, any tool.
 </p>
 
 ```bash
-./deck cheatsheet --title "Vim" --shortcuts "i:insert,Esc:normal,:w:save,:q:quit,dd:delete,yy:yank,p:paste,u:undo" --output ./output/vim.bmp
+./deck cheatsheet --title "Vim" --shortcuts "i:insert,a:append,I:insert at start,A:append at end,o:new line below,O:new line above,Esc:normal mode,:w:save,:q:quit,dd:delete line,yy:yank line,p:paste,u:undo,<C-r>:redo,gg:top of file,G:bottom of file,/:search,n:next match,^:start of line,$:end of line,v:visual mode" --output ./output/vim.bmp
 ```
 
 ### NATO Phonetic Alphabet
