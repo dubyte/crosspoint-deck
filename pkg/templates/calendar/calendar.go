@@ -88,11 +88,11 @@ func drawMonth(dc *gg.Context, t time.Time, x0, y0, cw, ch float64, fontPath str
 	dayOff := 18.0
 	dayBase := 52.0
 	if tight {
-		monthSize, headerSize, daySize = 14, 12, 12
-		monthOff = 12
-		headerOff = 26
-		dayOff = 14
-		dayBase = 40
+		monthSize, headerSize, daySize = 13, 11, 11
+		monthOff = 10
+		headerOff = 22
+		dayOff = 12
+		dayBase = 32
 	}
 
 	// Month name in bold
