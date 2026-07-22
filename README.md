@@ -3,9 +3,7 @@
 > A CLI tool to turn your XTEink X4 e-reader into an offline, glanceable information hub. Generate static e-ink dashboards, calendars, and utility cards.
 
 Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes. Perfect for offline productivity, organization, and displaying quick-reference data on e-ink displays.
-<p align="center">
-  <img src="docs/images/example-owner.png" width="400" alt="Owner identification card example">
-</p>
+
 
 ## What is this?
 
@@ -20,23 +18,17 @@ No firmware modifications. No mobile app. No complicated sync setup. Just genera
 Here are a few examples of what you can create:
 
 ### Owner Card
-<p align="center">
-  <img src="docs/images/example-owner.png" width="400" alt="Owner card showing name and contact info">
-</p>
+
 
 *"If found, please contact owner" — great for a device you carry around.*
 
 ### WiFi Access Card
-<p align="center">
-  <img src="docs/images/example-wifi.png" width="400" alt="WiFi card with QR code">
-</p>
+
 
 *Guests scan the QR code instead of asking for the password. Works beautifully on e-ink.*
 
 ### Year-at-a-Glance Calendar
-<p align="center">
-  <img src="docs/images/example-calendar.png" width="400" alt="2026 calendar card">
-</p>
+
 
 *Replaces a wall calendar. Always visible, never needs charging.*
 
