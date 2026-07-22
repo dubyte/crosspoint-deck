@@ -11,11 +11,9 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/business"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/calendar"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/cheatsheet"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/chore"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/coffee"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/convert"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/emergency"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/habit"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/library"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/loyalty"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/maintenance"
@@ -23,15 +21,12 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/morse"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/nato"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/owner"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/packing"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/plant"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/recipe"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/periodic"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/shopping"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/stretch"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/timezones"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/kitchenmath"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/pomodoro"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/transit"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/wifi"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/workout"
@@ -42,11 +37,9 @@ var registry = []card.Spec{
 	wifi.Spec(),
 	business.Spec(),
 	cheatsheet.Spec(),
-	chore.Spec(),
 	coffee.Spec(),
 	convert.Spec(),
 	emergency.Spec(),
-	habit.Spec(),
 	library.Spec(),
 	loyalty.Spec(),
 	maintenance.Spec(),
@@ -54,16 +47,13 @@ var registry = []card.Spec{
 	morse.Spec(),
 	nato.Spec(),
 	owner.Spec(),
-	packing.Spec(),
 	plant.Spec(),
 	recipe.Spec(),
 	periodic.Spec(),
-	shopping.Spec(),
 	stretch.Spec(),
 	timezones.Spec(),
 	workout.Spec(),
 	kitchenmath.Spec(),
-	pomodoro.Spec(),
 	transit.Spec(),
 }
 

@@ -30,7 +30,6 @@ Click any image to see it full-size.
 | Card Preview | Details & Command |
 | :---: | :--- |
 | <img src="docs/images/example-calendar.png" width="300" alt="Calendar card"> | **Year-at-a-Glance Calendar**<br/>Replaces a wall calendar.<br/><br/>```bash<br/>./deck calendar --year 2026 --output ./output/calendar.bmp<br/>``` |
-| <img src="docs/images/pomodoro.png" width="300" alt="Pomodoro card"> | **Deep Work Tracker (New)**<br/>A time-blocking grid to keep you focused.<br/><br/>```bash<br/>./deck pomodoro --sessions 8 --output output/pomodoro.bmp<br/>``` |
 
 ---
 
@@ -50,20 +49,16 @@ CrossPoint Deck supports 27 card types total. Run `./deck --help` to see them al
 
 | Card | Example Command |
 |---|---|
-| `chore` | `./deck chore --title "Weekly Chores" --chores "Dishes,Laundry,Vacuum,Trash,Dust" --output ./output/chores.bmp` |
 | `coffee` | `./deck coffee --method "French Press" --ratio "1:15" --temp "94°C" --time "4 min" --output ./output/coffee.bmp` |
 | `convert` | `./deck convert --output ./output/convert.bmp` |
 | `emergency` | `./deck emergency --country "USA" --contacts "Police:911" --blood "O+" --output ./output/emergency.bmp` |
-| `habit` | `./deck habit --title "Daily Habits" --habits "Read,Exercise" --days "7" --output ./output/habit.bmp` |
 | `library` | `./deck library --name "Alex" --card-number "29103000123456" --branch "Downtown" --output ./output/library.bmp` |
 | `loyalty` | `./deck loyalty --stores "Airline:FF123456,Gym:MEM789" --output ./output/loyalty.bmp` |
 | `maintenance` | `./deck maintenance --output ./output/maintenance.bmp` |
 | `meeting` | `./deck meeting --room "Boardroom" --output ./output/meeting.bmp` |
 | `morse` | `./deck morse --output ./output/morse.bmp` |
-| `packing` | `./deck packing --title "Weekend Trip" --items "Passport,Phone,Charger" --output ./output/packing.bmp` |
 | `periodic` | `./deck periodic --output ./output/periodic.bmp` |
 | `plant` | `./deck plant --plant "Monstera" --water "Weekly" --output ./output/monstera.bmp` |
-| `shopping` | `./deck shopping --output ./output/shopping.bmp` |
 | `stretch` | `./deck stretch --output ./output/stretch.bmp` |
 | `timezones` | `./deck timezones --local "New York EST" --cities "Tokyo:+14h" --output ./output/timezones.bmp` |
 | `workout` | `./deck workout --title "Morning Circuit" --exercises "Push-ups:10,Squats:15" --rounds "3" --rest "60" --output ./output/workout.bmp` |

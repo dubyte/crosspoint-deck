@@ -31,7 +31,7 @@ CrossPoint Deck generates a variety of cards designed with high-contrast typogra
 * **WiFi Access:** Guests scan the QR code instead of asking for the password.
 * **Calendars:** Replaces a wall calendar. Always visible, never needs charging.
 * **Periodic Table:** A quick science reference card.
-* **Checklists:** Packing lists, habit trackers, and chore charts.
+* **Schedules:** Transit times, plant care, and workout routines.
 
 ## Quick Start: From Zero to Card
 
@@ -100,8 +100,6 @@ Run `./deck --help` to see all commands, or `mage -l` for build tasks. For a ful
 | `calendar` | Year-at-a-glance | Wall calendar replacement |
 | `cheatsheet` | Keyboard shortcuts | Vim, Git, or any tool you use daily |
 | `emergency` | Emergency contacts | Always-accessible ICE info |
-| `habit` | Habit tracker grid | Track daily routines |
-| `packing` | Packing checklist | Reuse for every trip |
 | `recipe` | Recipe with ingredients & steps | Cooking without touching your phone |
 | `plant` | Plant care guide | Water/light schedule per plant |
 | `workout` | Bodyweight workout | Gym card replacement |
@@ -110,7 +108,6 @@ Run `./deck --help` to see all commands, or `mage -l` for build tasks. For a ful
 | `periodic` | Periodic table | Science reference |
 | `kitchen-math` | Kitchen conversions and safe temperatures | Perfect for the kitchen counter |
 | `transit` | Train or bus schedules | Your commute at a glance |
-| `pomodoro` | Deep work and time blocking grid | Keep focused at your desk |
 | `timezones` | World time zones | Quick reference for calls |
 | ...and 9 more | See `./deck --help` | |
 
