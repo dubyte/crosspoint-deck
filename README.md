@@ -1,7 +1,8 @@
 # CrossPoint Deck
 
-Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes.
+> A CLI tool to turn your XTEink X4 e-reader into an offline, glanceable information hub. Generate static e-ink dashboards, calendars, and utility cards.
 
+Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes. Perfect for offline productivity, organization, and displaying quick-reference data on e-ink displays.
 <p align="center">
   <img src="docs/images/example-owner.png" width="400" alt="Owner identification card example">
 </p>
