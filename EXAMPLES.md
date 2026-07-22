@@ -17,8 +17,8 @@ Show "this e-reader belongs to" info with an optional phone number.
 </p>
 
 ```bash
-./deck owner --name "Your Name" --email "you@example.com" --output ./my-deck/owner.bmp
-./deck owner --name "Your Name" --email "you@example.com" --phone "+1-555-0100" --output ./my-deck/owner.bmp
+./deck owner --name "Your Name" --email "you@example.com" --output ./output/owner.bmp
+./deck owner --name "Your Name" --email "you@example.com" --phone "+1-555-0100" --output ./output/owner.bmp
 ```
 
 ### WiFi Access Card
@@ -30,7 +30,7 @@ QR code that guests can scan. No typing passwords on tiny keyboards.
 </p>
 
 ```bash
-./deck wifi --ssid "YourNetwork" --password "secret123" --output ./my-deck/wifi.bmp
+./deck wifi --ssid "YourNetwork" --password "secret123" --output ./output/wifi.bmp
 ```
 
 ### Business Card
@@ -42,7 +42,7 @@ Contact info with a vCard QR code. Scan it to add the contact directly to a phon
 </p>
 
 ```bash
-./deck business --name "Alex Reader" --title "Developer" --email "alex@example.com" --phone "+1-555-0100" --output ./my-deck/business.bmp
+./deck business --name "Alex Reader" --title "Developer" --email "alex@example.com" --phone "+1-555-0100" --output ./output/business.bmp
 ```
 
 ---
@@ -58,8 +58,8 @@ Replaces a wall calendar. Fits the full year on one screen with month grids.
 </p>
 
 ```bash
-./deck calendar --year 2026 --output ./my-deck/calendar-2026.bmp
-./deck calendar --year 2026 --portrait --output ./my-deck/calendar-2026-portrait.bmp
+./deck calendar --year 2026 --output ./output/calendar-2026.bmp
+./deck calendar --year 2026 --portrait --output ./output/calendar-2026-portrait.bmp
 ```
 
 ---
@@ -75,7 +75,7 @@ Put the shortcuts you actually use on your desk. Vim, Git, Emacs, any tool.
 </p>
 
 ```bash
-./deck cheatsheet --title "Vim" --shortcuts "i:insert,Esc:normal,:w:save,:q:quit,dd:delete,yy:yank,p:paste,u:undo" --output ./my-deck/vim.bmp
+./deck cheatsheet --title "Vim" --shortcuts "i:insert,Esc:normal,:w:save,:q:quit,dd:delete,yy:yank,p:paste,u:undo" --output ./output/vim.bmp
 ```
 
 ### NATO Phonetic Alphabet
@@ -87,7 +87,7 @@ Classic laminated reference. Never wonder how to spell "B" again.
 </p>
 
 ```bash
-./deck nato --output ./my-deck/nato.bmp
+./deck nato --output ./output/nato.bmp
 ```
 
 ---
@@ -103,7 +103,7 @@ Always-accessible ICE info. Blood type and emergency numbers.
 </p>
 
 ```bash
-./deck emergency --country "USA" --contacts "Police:911,Ambulance:911,Fire:911" --blood "O+" --output ./my-deck/emergency.bmp
+./deck emergency --country "USA" --contacts "Police:911,Ambulance:911,Fire:911" --blood "O+" --output ./output/emergency.bmp
 ```
 
 ### Habit Tracker
@@ -115,7 +115,7 @@ Weekly grid for tracking routines. Replaces the paper version on your fridge.
 </p>
 
 ```bash
-./deck habit --title "Daily Habits" --habits "Read,Exercise,Meditate,Journal" --days "7" --output ./my-deck/habit.bmp
+./deck habit --title "Daily Habits" --habits "Read,Exercise,Meditate,Journal" --days "7" --output ./output/habit.bmp
 ```
 
 ---
@@ -131,7 +131,7 @@ Reusable for every trip. Checkboxes you can mentally tick.
 </p>
 
 ```bash
-./deck packing --title "Weekend Trip" --items "Passport,Phone,Charger,Toothbrush,Clothes,Money,Keys,Camera,Snacks,Book" --output ./my-deck/packing.bmp
+./deck packing --title "Weekend Trip" --items "Passport,Phone,Charger,Toothbrush,Clothes,Money,Keys,Camera,Snacks,Book" --output ./output/packing.bmp
 ```
 
 ---
@@ -147,7 +147,7 @@ One recipe, big type. No scrolling with flour on your fingers.
 </p>
 
 ```bash
-./deck recipe --title "Pasta Carbonara" --ingredients "Spaghetti,Eggs,Pancetta,Parmesan,Black pepper" --steps "Cook pasta,Fry pancetta,Mix eggs & cheese,Combine all,Serve hot" --time "20 min" --servings "2" --output ./my-deck/carbonara.bmp
+./deck recipe --title "Pasta Carbonara" --ingredients "Spaghetti,Eggs,Pancetta,Parmesan,Black pepper" --steps "Cook pasta,Fry pancetta,Mix eggs & cheese,Combine all,Serve hot" --time "20 min" --servings "2" --output ./output/carbonara.bmp
 ```
 
 ### Plant Care Guide
@@ -159,7 +159,7 @@ Water, light, humidity, food schedule per plant. Replaces sticky notes in pots.
 </p>
 
 ```bash
-./deck plant --plant "Monstera Deliciosa" --water "Weekly" --light "Indirect bright" --humidity "Moderate" --food "Monthly" --output ./my-deck/monstera.bmp
+./deck plant --plant "Monstera Deliciosa" --water "Weekly" --light "Indirect bright" --humidity "Moderate" --food "Monthly" --output ./output/monstera.bmp
 ```
 
 ---
@@ -175,7 +175,7 @@ No-equipment circuit with rounds and rest intervals. Replaces the gym poster.
 </p>
 
 ```bash
-./deck workout --title "Morning Circuit" --exercises "Push-ups:10,Squats:15,Plank:30s,Lunges:12,Jumping Jacks:20" --rounds "3" --rest "60" --output ./my-deck/workout.bmp
+./deck workout --title "Morning Circuit" --exercises "Push-ups:10,Squats:15,Plank:30s,Lunges:12,Jumping Jacks:20" --rounds "3" --rest "60" --output ./output/workout.bmp
 ```
 
 ---
@@ -188,18 +188,18 @@ Here are the remaining types with quick examples:
 
 | Card | Example Command |
 |---|---|
-| `chore` | `./deck chore --title "Weekly Chores" --chores "Dishes,Laundry,Vacuum,Trash,Dust" --output ./my-deck/chores.bmp` |
-| `coffee` | `./deck coffee --method "French Press" --ratio "1:15" --temp "94°C" --time "4 min" --output ./my-deck/coffee.bmp` |
-| `convert` | `./deck convert --output ./my-deck/convert.bmp` |
-| `library` | `./deck library --name "Alex" --card-number "29103000123456" --branch "Downtown" --output ./my-deck/library.bmp` |
-| `loyalty` | `./deck loyalty --stores "Airline:FF123456,Gym:MEM789" --output ./my-deck/loyalty.bmp` |
-| `maintenance` | `./deck maintenance --output ./my-deck/maintenance.bmp` |
-| `meeting` | `./deck meeting --room "Boardroom" --output ./my-deck/meeting.bmp` |
-| `morse` | `./deck morse --output ./my-deck/morse.bmp` |
-| `periodic` | `./deck periodic --output ./my-deck/periodic.bmp` |
-| `shopping` | `./deck shopping --output ./my-deck/shopping.bmp` |
-| `stretch` | `./deck stretch --output ./my-deck/stretch.bmp` |
-| `timezones` | `./deck timezones --local "New York EST" --cities "Tokyo:+14h,London:+5h" --output ./my-deck/timezones.bmp` |
+| `chore` | `./deck chore --title "Weekly Chores" --chores "Dishes,Laundry,Vacuum,Trash,Dust" --output ./output/chores.bmp` |
+| `coffee` | `./deck coffee --method "French Press" --ratio "1:15" --temp "94°C" --time "4 min" --output ./output/coffee.bmp` |
+| `convert` | `./deck convert --output ./output/convert.bmp` |
+| `library` | `./deck library --name "Alex" --card-number "29103000123456" --branch "Downtown" --output ./output/library.bmp` |
+| `loyalty` | `./deck loyalty --stores "Airline:FF123456,Gym:MEM789" --output ./output/loyalty.bmp` |
+| `maintenance` | `./deck maintenance --output ./output/maintenance.bmp` |
+| `meeting` | `./deck meeting --room "Boardroom" --output ./output/meeting.bmp` |
+| `morse` | `./deck morse --output ./output/morse.bmp` |
+| `periodic` | `./deck periodic --output ./output/periodic.bmp` |
+| `shopping` | `./deck shopping --output ./output/shopping.bmp` |
+| `stretch` | `./deck stretch --output ./output/stretch.bmp` |
+| `timezones` | `./deck timezones --local "New York EST" --cities "Tokyo:+14h,London:+5h" --output ./output/timezones.bmp` |
 
 All cards support `--portrait` for 480×800 output and `--font /path/to/font.ttf` for custom fonts.
 

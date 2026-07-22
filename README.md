@@ -51,16 +51,16 @@ This creates a `deck` command in the current folder.
 
 ```bash
 # Owner card
-./deck owner --name "Your Name" --email "you@example.com" --output ./my-deck/owner.bmp
+./deck owner --name "Your Name" --email "you@example.com" --output ./output/owner.bmp
 
 # WiFi card with QR code
-./deck wifi --ssid "YourNetwork" --password "secret123" --output ./my-deck/wifi.bmp
+./deck wifi --ssid "YourNetwork" --password "secret123" --output ./output/wifi.bmp
 
 # 2026 calendar (landscape)
-./deck calendar --year 2026 --output ./my-deck/calendar-2026.bmp
+./deck calendar --year 2026 --output ./output/calendar-2026.bmp
 
 # Portrait orientation works too
-./deck owner --name "Your Name" --email "you@example.com" --portrait --output ./my-deck/owner-portrait.bmp
+./deck owner --name "Your Name" --email "you@example.com" --portrait --output ./output/owner-portrait.bmp
 ```
 
 Every card is an **uncompressed 24-bit BMP** at exactly 800×480 pixels (or 480×800 for portrait). The X4's display dithers these to 4 grayscale levels natively, so text looks crisp and anti-aliased edges stay smooth.
@@ -71,7 +71,7 @@ Take the SD card out of your X4, plug it into your computer, and copy the folder
 
 ```bash
 # Linux / macOS
-cp -r ./my-deck /media/your-sd-card/Deck/
+cp -r ./output /media/your-sd-card/Deck/
 
 # Windows — drag and drop the folder to the SD card
 ```
