@@ -30,6 +30,9 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/shopping"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/stretch"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/timezones"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/kitchenmath"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/pomodoro"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/transit"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/wifi"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/workout"
 )
@@ -59,6 +62,9 @@ var registry = []card.Spec{
 	stretch.Spec(),
 	timezones.Spec(),
 	workout.Spec(),
+	kitchenmath.Spec(),
+	pomodoro.Spec(),
+	transit.Spec(),
 }
 
 func main() {

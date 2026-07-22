@@ -108,6 +108,9 @@ Run `./deck --help` to see all commands, or `mage -l` for build tasks. For a ful
 | `coffee` | Brew guide with ratios | Pour-over or French press steps |
 | `nato` | Phonetic alphabet | Classic reference card |
 | `periodic` | Periodic table | Science reference |
+| `kitchen-math` | Kitchen conversions and safe temperatures | Perfect for the kitchen counter |
+| `transit` | Train or bus schedules | Your commute at a glance |
+| `pomodoro` | Deep work and time blocking grid | Keep focused at your desk |
 | `timezones` | World time zones | Quick reference for calls |
 | ...and 9 more | See `./deck --help` | |
 

@@ -172,3 +172,51 @@ func splitWords(text string) []string {
 	}
 	return words
 }
+
+// Grayscale palette for 4-level e-ink displays.
+var (
+	ColorWhite     = color.RGBA{255, 255, 255, 255}
+	ColorLightGray = color.RGBA{204, 204, 204, 255}
+	ColorDarkGray  = color.RGBA{102, 102, 102, 255}
+	ColorBlack     = color.RGBA{0, 0, 0, 255}
+)
+
+// DrawHardDropShadowPanel draws a panel with a hard-edged drop shadow.
+func DrawHardDropShadowPanel(dc *gg.Context, x, y, w, h float64, shadowOffset float64, panelColor, shadowColor color.Color) {
+	// Draw shadow
+	dc.SetColor(shadowColor)
+	dc.DrawRectangle(x+shadowOffset, y+shadowOffset, w, h)
+	dc.Fill()
+
+	// Draw panel
+	dc.SetColor(panelColor)
+	dc.DrawRectangle(x, y, w, h)
+	dc.Fill()
+
+	// Draw border
+	dc.SetColor(ColorBlack)
+	dc.DrawRectangle(x, y, w, h)
+	dc.SetLineWidth(2)
+	dc.Stroke()
+}
+
+// DrawLeaderDotsText draws key-value text with leader dots in between.
+func DrawLeaderDotsText(dc *gg.Context, key, val string, x, y, width float64) {
+	dc.SetColor(ColorBlack)
+	dc.DrawStringAnchored(key, x, y, 0, 0)
+	
+	keyW, _ := dc.MeasureString(key + " ")
+	valW, _ := dc.MeasureString(" " + val)
+	
+	// Draw value right-aligned
+	dc.DrawStringAnchored(val, x+width, y, 1, 0)
+	
+	// Draw dots
+	dotStartX := x + keyW
+	dotEndX := x + width - valW
+	dotSpacing := 8.0 // static spacing
+	
+	for dx := dotStartX; dx < dotEndX; dx += dotSpacing {
+		dc.DrawStringAnchored(".", dx, y, 0, 0)
+	}
+}
