@@ -42,29 +42,39 @@ func PackDeveloper() error {
 
 	b.AddCard("Vim Shortcuts", &cheatsheet.Card{
 		Title: "Vim",
-		Shortcuts: []cheatsheet.Shortcut{
-			{Keys: "i", Description: "Insert mode"},
-			{Keys: "Esc", Description: "Normal mode"},
-			{Keys: ":w", Description: "Save"},
-			{Keys: ":q", Description: "Quit"},
-			{Keys: "dd", Description: "Delete line"},
-			{Keys: "yy", Description: "Yank line"},
-			{Keys: "p", Description: "Paste"},
-			{Keys: "u", Description: "Undo"},
+		Categories: []cheatsheet.Category{
+			{
+				Name: "General",
+				Shortcuts: []cheatsheet.Shortcut{
+					{Keys: "i", Description: "Insert mode"},
+					{Keys: "Esc", Description: "Normal mode"},
+					{Keys: ":w", Description: "Save"},
+					{Keys: ":q", Description: "Quit"},
+					{Keys: "dd", Description: "Delete line"},
+					{Keys: "yy", Description: "Yank line"},
+					{Keys: "p", Description: "Paste"},
+					{Keys: "u", Description: "Undo"},
+				},
+			},
 		},
 	})
 
 	b.AddCard("Git Shortcuts", &cheatsheet.Card{
 		Title: "Git",
-		Shortcuts: []cheatsheet.Shortcut{
-			{Keys: "git status", Description: "Check status"},
-			{Keys: "git add .", Description: "Stage all"},
-			{Keys: "git commit", Description: "Commit"},
-			{Keys: "git push", Description: "Push"},
-			{Keys: "git pull", Description: "Pull"},
-			{Keys: "git log", Description: "View log"},
-			{Keys: "git diff", Description: "Show diff"},
-			{Keys: "git branch", Description: "List branches"},
+		Categories: []cheatsheet.Category{
+			{
+				Name: "General",
+				Shortcuts: []cheatsheet.Shortcut{
+					{Keys: "git status", Description: "Check status"},
+					{Keys: "git add .", Description: "Stage all"},
+					{Keys: "git commit", Description: "Commit"},
+					{Keys: "git push", Description: "Push"},
+					{Keys: "git pull", Description: "Pull"},
+					{Keys: "git log", Description: "View log"},
+					{Keys: "git diff", Description: "Show diff"},
+					{Keys: "git branch", Description: "List branches"},
+				},
+			},
 		},
 	})
 
