@@ -1,9 +1,15 @@
-# CrossPoint Deck
+# 🗃️ CrossPoint Deck
+
+[![Go Version](https://img.shields.io/github/go-mod/go-version/dubyte/crosspoint-deck)](https://go.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > A CLI tool to turn your XTEink X4 e-reader into an offline, glanceable information hub. Generate static e-ink dashboards, calendars, and utility cards.
 
-Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes. Perfect for offline productivity, organization, and displaying quick-reference data on e-ink displays.
+<p align="center">
+  <img src="docs/images/banner.png" alt="CrossPoint Deck Examples Collage">
+</p>
 
+Turn your XTEink X4 e-reader into a **glanceable information hub** — a deck of useful cards you reference in seconds, not minutes. Perfect for offline productivity, organization, and displaying quick-reference data on e-ink displays.
 
 ## What is this?
 
@@ -13,24 +19,19 @@ Your XTEink X4 is great for reading books. But it also excels at showing **stati
 
 No firmware modifications. No mobile app. No complicated sync setup. Just generate, copy, and go.
 
-## What It Looks Like
+## 🎨 What It Looks Like
 
-Here are a few examples of what you can create:
+CrossPoint Deck generates a variety of cards designed with high-contrast typography specifically for e-ink displays. 
 
-### Owner Card
+> [!TIP]
+> 🖼️ **[Click here to view the full image gallery in EXAMPLES.md](EXAMPLES.md)** to see all the cards you can generate!
 
-
-*"If found, please contact owner" — great for a device you carry around.*
-
-### WiFi Access Card
-
-
-*Guests scan the QR code instead of asking for the password. Works beautifully on e-ink.*
-
-### Year-at-a-Glance Calendar
-
-
-*Replaces a wall calendar. Always visible, never needs charging.*
+**Some of the things you can create:**
+* **Owner Cards:** *"If found, please contact"* — great for a device you carry around.
+* **WiFi Access:** Guests scan the QR code instead of asking for the password.
+* **Calendars:** Replaces a wall calendar. Always visible, never needs charging.
+* **Periodic Table:** A quick science reference card.
+* **Checklists:** Packing lists, habit trackers, and chore charts.
 
 ## Quick Start: From Zero to Card
 
