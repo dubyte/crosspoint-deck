@@ -131,11 +131,11 @@ func Morse() error {
 	return sh.Run("./deck", "morse", "--output", "./output/morse.bmp")
 }
 
-// Resistor generates a resistor color code reference card.
-func Resistor() error {
+// Periodic generates a periodic table reference card.
+func Periodic() error {
 	mg.Deps(Build)
-	fmt.Println("Generating resistor codes...")
-	return sh.Run("./deck", "resistor", "--output", "./output/resistor.bmp")
+	fmt.Println("Generating periodic table...")
+	return sh.Run("./deck", "periodic", "--output", "./output/periodic.bmp")
 }
 
 // Convert generates a common conversions reference card.
@@ -197,7 +197,7 @@ func Maintenance() error {
 // All generates all card types.
 func All() error {
 	mg.Deps(Calendar, CalendarPortrait, WiFi, Business, Cheatsheet, Meeting, Packing, Emergency, Habit,
-		Chore, Shopping, Loyalty, Library, Nato, Morse, Resistor, Convert,
+		Chore, Shopping, Loyalty, Library, Nato, Morse, Periodic, Convert,
 		Recipe, Coffee, Plant, Workout, Stretch, Timezones, Maintenance)
 	fmt.Println("All cards generated.")
 	return nil

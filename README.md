@@ -106,7 +106,7 @@ Run `./deck --help` to see all commands, or `mage -l` for build tasks. For a ful
 | `workout` | Bodyweight workout | Gym card replacement |
 | `coffee` | Brew guide with ratios | Pour-over or French press steps |
 | `nato` | Phonetic alphabet | Classic reference card |
-| `resistor` | Resistor color codes | Electronics bench staple |
+| `periodic` | Periodic table | Science reference |
 | `timezones` | World time zones | Quick reference for calls |
 | ...and 9 more | See `./deck --help` | |
 

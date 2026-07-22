@@ -26,7 +26,7 @@ import (
 	"github.com/dubyte/crosspoint-deck/pkg/templates/packing"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/plant"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/recipe"
-	"github.com/dubyte/crosspoint-deck/pkg/templates/resistor"
+	"github.com/dubyte/crosspoint-deck/pkg/templates/periodic"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/shopping"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/stretch"
 	"github.com/dubyte/crosspoint-deck/pkg/templates/timezones"
@@ -54,7 +54,7 @@ var registry = []card.Spec{
 	packing.Spec(),
 	plant.Spec(),
 	recipe.Spec(),
-	resistor.Spec(),
+	periodic.Spec(),
 	shopping.Spec(),
 	stretch.Spec(),
 	timezones.Spec(),

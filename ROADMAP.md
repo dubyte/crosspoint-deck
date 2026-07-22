@@ -19,7 +19,7 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
    - Habit Tracker, Maintenance — checkbox grids
    - Coffee, Recipe, Plant, Workout, Stretch — structured reference cards
    - Library, Loyalty — identity cards
-   - Nato, Morse, Resistor, Convert, Timezones — quick reference charts
+   - Nato, Morse, Periodic, Convert, Timezones — quick reference charts
 4. ✅ **Design system** — Reversed black header bar + 2px divider + bold/regular typographic hierarchy on all cards
 5. ✅ **Grayscale pipeline** — BMP encoder preserves anti-aliased edges; X4's SSD1677 controller dithers 24-bit to 4-level natively
 6. ✅ **Build automation** — Mage tasks for each card + `mage All`
@@ -62,7 +62,7 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 
 1. ✅ **Home & kitchen pack** — recipe card, chore chart, plant care guide, shopping list, coffee brew guide
 2. ✅ **Identity pack** — loyalty cards, library card, owner card
-3. ✅ **Reference pack** — NATO phonetic alphabet, morse code, resistor codes, world time zones, common conversions
+3. ✅ **Reference pack** — NATO phonetic alphabet, morse code, periodic table, world time zones, common conversions
 4. ✅ **Fitness pack** — bodyweight workout, stretching routine
 
 **Remaining Phase 3 / Phase 4 ideas:**
@@ -118,7 +118,7 @@ This roadmap synthesizes findings from three expert analyses (Product & UX, Tech
 | 16 | Library Card | Identity | Simple | Card number + branch info; always in your "wallet" |
 | 17 | NATO Phonetic Alphabet | Reference | Simple | Alpha Bravo Charlie; classic laminated reference |
 | 18 | Morse Code Chart | Reference | Simple | Dots and dashes; fits one card perfectly |
-| 19 | Resistor Color Codes | Reference | Simple | BBROYGBVGW; electronics bench staple |
+| 19 | Periodic Table | Reference | Simple | First 36 elements; science reference |
 | 20 | World Time Zones | Reference | Medium | Major cities mapped to your local time |
 | 21 | Common Conversions | Reference | Simple | Metric ↔ imperial; °F ↔ °C; laminated kitchen card |
 | 22 | Bodyweight Workout | Fitness | Simple | No-equipment circuit; replaces gym poster |

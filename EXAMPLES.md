@@ -196,7 +196,7 @@ Here are the remaining types with quick examples:
 | `maintenance` | `./deck maintenance --output ./my-deck/maintenance.bmp` |
 | `meeting` | `./deck meeting --room "Boardroom" --output ./my-deck/meeting.bmp` |
 | `morse` | `./deck morse --output ./my-deck/morse.bmp` |
-| `resistor` | `./deck resistor --output ./my-deck/resistor.bmp` |
+| `periodic` | `./deck periodic --output ./my-deck/periodic.bmp` |
 | `shopping` | `./deck shopping --output ./my-deck/shopping.bmp` |
 | `stretch` | `./deck stretch --output ./my-deck/stretch.bmp` |
 | `timezones` | `./deck timezones --local "New York EST" --cities "Tokyo:+14h,London:+5h" --output ./my-deck/timezones.bmp` |
